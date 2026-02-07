@@ -193,5 +193,23 @@
       "followers": 1000,
       "engagement_rate": 10
     }
+  ],
+  "influencer_categories": [
+    {
+      "influencer_id": 1,
+      "category_id": 1
+    },
+    {
+      "influencer_id": 2,
+      "category_id": 2
+    },
+    {
+      "influencer_id": 2,
+      "category_id": 3
+    },
+    {
+      "influencer_id": 2,
+      "category_id": 4
+    }
   ]
 }

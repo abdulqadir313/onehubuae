@@ -46,10 +46,10 @@ const initiatePreData = async () => {
   //   await InfluencerCampaignModel.bulkCreate(preData.influencer_campaigns);
   // }
 
-  // let influencerCategories = await InfluencerCategoryModel.findAll();
-  // if (influencerCategories.length === 0) {
-  //   await InfluencerCategoryModel.bulkCreate(preData.influencer_categories);
-  // }
+  let influencerCategories = await InfluencerCategoryModel.findAll();
+  if (influencerCategories.length === 0) {
+    await InfluencerCategoryModel.bulkCreate(preData.influencer_categories);
+  }
 
   // let payments = await PaymentModel.findAll();
   // if (payments.length === 0) {

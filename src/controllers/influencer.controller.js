@@ -1,6 +1,7 @@
+const { Op } = require('sequelize');
 const InfluencerModel = require('../models/influencer');
 const SocialProfileModel = require('../models/social_profile');
-
+const CategoriesModel = require('../models/category');
 // const influencerService = require('../services/influencer.service');
 
 // exports.getAllInfluencers = async (req, res) => {
@@ -28,17 +29,39 @@ const SocialProfileModel = require('../models/social_profile');
 const InfluencerController = () => {
   const getInfluencersByPlatformId = async (req, res) => {
     try {
-      const { platform_id } = req.query;
+      const { platform_id, category_id } = req.body;
+
+      if (!platform_id) {
+        return res.status(200).json({
+          success: false,
+          message: 'platform_id is required',
+        });
+      }
+
+      const category_ids = category_id.map(id => parseInt(id, 10));
+      console.log(category_ids);
+
+      const includes = [
+        {
+          model: SocialProfileModel,
+          where: { platform_id },
+          required: true,
+        },
+      ];
+
+      if (category_ids.length > 0) {
+        includes.push({
+          model: CategoriesModel,
+          through: { attributes: [] },
+          where: { id: { [Op.in]: category_ids } },
+          required: true,
+        });
+      }
+
       const influencers = await InfluencerModel.findAll({
-        include: [
-          {
-            model: SocialProfileModel,
-            where: {
-              platform_id: platform_id,
-            },
-          },
-        ],
+        include: includes,
       });
+
       res.status(200).json({
         success: true,
         data: influencers,
@@ -49,11 +72,11 @@ const InfluencerController = () => {
         message: error.message,
       });
     }
-  }
+  };
 
   return {
     getInfluencersByPlatformId,
-  }
-}
+  };
+};
 
 module.exports = InfluencerController;
