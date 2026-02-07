@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
+const CategoriesController = require('../controllers/category.controller');
+
 const {
-  getAllCategories
-} = require('../controllers/category.controller');
+  getAllCategories,
+} = CategoriesController();
 
 router.get('/', getAllCategories);
 

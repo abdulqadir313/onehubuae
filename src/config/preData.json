@@ -1,0 +1,197 @@
+{
+  "categories": [
+    {
+      "name": "Fashion",
+      "slug": "fashion",
+      "image": "https://images.unsplash.com/photo-1605403806790-03de8c07b7c1",
+      "isActive": 1
+    },
+    {
+      "name": "Travel",
+      "slug": "travel",
+      "image": "https://images.unsplash.com/photo-1761852771079-1abd6d5a4440",
+      "isActive": 1
+    },
+    {
+      "name": "Food",
+      "slug": "food",
+      "image": "https://images.unsplash.com/photo-1765278797879-47c9f88cf1c3",
+      "isActive": 1
+    },
+    {
+      "name": "Beauty",
+      "slug": "beauty",
+      "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344",
+      "isActive": 1
+    },
+    {
+      "name": "Lifestyle",
+      "slug": "lifestyle",
+      "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344",
+      "isActive": 1
+    },
+    {
+      "name": "Health & Fitness",
+      "slug": "health-fitness",
+      "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344",
+      "isActive": 1
+    },
+    {
+      "name": "Food & Drink",
+      "slug": "food-drink",
+      "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344",
+      "isActive": 1
+    },
+    {
+      "name": "Family & Children",
+      "slug": "family-children",
+      "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344",
+      "isActive": 1
+    },
+    {
+      "name": "Comedy & Entertainment",
+      "slug": "comedy-entertainment",
+      "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344",
+      "isActive": 1
+    },
+    {
+      "name": "Art & Photography",
+      "slug": "art-photography",
+      "image": null,
+      "isActive": 1
+    },
+    {
+      "name": "Music & Dance",
+      "slug": "music-dance",
+      "image": null,
+      "isActive": 1
+    },
+    {
+      "name": "Model",
+      "slug": "model",
+      "image": null,
+      "isActive": 1
+    },
+    {
+      "name": "Animals & Pets",
+      "slug": "animals-pets",
+      "image": null,
+      "isActive": 1
+    },
+    {
+      "name": "Adventure & Outdoors",
+      "slug": "adventure-outdoors",
+      "image": null,
+      "isActive": 1
+    },
+    {
+      "name": "Entrepreneur & Business",
+      "slug": "entrepreneur-business",
+      "image": null,
+      "isActive": 1
+    },
+    {
+      "name": "Education",
+      "slug": "education",
+      "image": null,
+      "isActive": 1
+    },
+    {
+      "name": "Athlete & Sports",
+      "slug": "athlete-sports",
+      "image": null,
+      "isActive": 1
+    },
+    {
+      "name": "Gaming",
+      "slug": "gaming",
+      "image": null,
+      "isActive": 1
+    },
+    {
+      "name": "Technology",
+      "slug": "technology",
+      "image": null,
+      "isActive": 1
+    },
+    {
+      "name": "Healthcare",
+      "slug": "healthcare",
+      "image": null,
+      "isActive": 1
+    },
+    {
+      "name": "Actor",
+      "slug": "actor",
+      "image": null,
+      "isActive": 1
+    },
+    {
+      "name": "Automotive",
+      "slug": "automotive",
+      "image": null,
+      "isActive": 1
+    }
+  ],
+  "content_types": [
+    {
+      "name": "Reel"
+    },
+    {
+      "name": "Story"
+    },
+    {
+      "name": "Post"
+    }
+  ],
+  "influencers": [
+    {
+      "fullName": "Houra Mirhashemi",
+      "email": "hulya_dxb@gmail.com",
+      "phone": null,
+      "country": "United Arab Emirates",
+      "city": "Dubai",
+      "profilePic": "https://onehub.ae/wp-content/uploads/2025/10/hulya_dxb.jpg",
+      "bio": "ʙᴜꜱɪɴᴇꜱꜱ ᴏᴡɴᴇʀ | ᴀʀᴄʜɪᴛᴇᴄᴛ | ɪɴᴛᴇʀɪᴏʀ ᴅᴇꜱɪɢɴᴇʀ"
+    },
+    {
+      "fullName": "APARNA",
+      "email": "workwithaparna03@gmail.com",
+      "phone": "9899899898",
+      "country": "UAE",
+      "city": "Dubai",
+      "profilePic": "https://instagram.fpgh2-1.fna.fbcdn.net/v/t51.2885-19/610682319_17905761282317076_6789158323520136508_n.jpg",
+      "bio": "Sharing pretty much everything that I love and creating the life I once dreamed"
+    }
+  ],
+  "platforms": [
+    {
+      "name": "Instagram",
+      "image_url": "https://www.instagram.com/hulya_dxb/",
+      "is_active": 1
+    },
+    {
+      "name": "YouTube",
+      "image_url": "https://www.youtube.com/hulya_dxb/",
+      "is_active": 1
+    }
+  ],
+  "social_profiles": [
+    {
+      "influencer_id": 1,
+      "platform_id": 1,
+      "username": "hulya_dxb",
+      "profile_url": "https://www.instagram.com/hulya_dxb/",
+      "followers": 1000,
+      "engagement_rate": 10
+    },
+    {
+      "influencer_id": 1,
+      "platform_id": 2,
+      "username": "aparna._.abhishek",
+      "profile_url": "https://www.instagram.com/hulya_dxb/",
+      "followers": 1000,
+      "engagement_rate": 10
+    }
+  ]
+}
