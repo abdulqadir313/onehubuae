@@ -2,22 +2,35 @@
   "name": "onehub",
   "version": "1.0.0",
   "description": "API for our WebPortal",
+  "keywords": [],
+  "homepage": "https://github.com/abdulqadir313/onehubuae#readme",
+  "bugs": {
+    "url": "https://github.com/abdulqadir313/onehubuae/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abdulqadir313/onehubuae.git"
+  },
   "license": "ISC",
   "author": "Abdul",
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   },
-  "keywords": [],
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
+    "crypto": "^1.0.1",
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "moment-timezone": "^0.6.0",
     "morgan": "^1.10.1",
     "mysql2": "^3.16.3",
+    "nodemailer": "^8.0.1",
     "sequelize": "^6.37.7"
   },
   "devDependencies": {

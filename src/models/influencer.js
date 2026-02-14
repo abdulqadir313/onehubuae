@@ -11,7 +11,7 @@ const InfluencerModel = database.define(
       primaryKey: true,
       field: "influencer_id",
     },
-    fullName: {
+    full_name: {
       type: DataTypes.STRING(150),
       allowNull: false,
       field: "full_name",
@@ -20,6 +20,10 @@ const InfluencerModel = database.define(
       type: DataTypes.STRING(150),
       allowNull: true,
       field: "email",
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     phone: {
       type: DataTypes.STRING(30),
@@ -36,7 +40,7 @@ const InfluencerModel = database.define(
       allowNull: true,
       field: "city",
     },
-    profilePic: {
+    profile_pic: {
       type: DataTypes.STRING(255),
       allowNull: true,
       field: "profile_pic",
@@ -45,6 +49,14 @@ const InfluencerModel = database.define(
       type: DataTypes.TEXT,
       allowNull: true,
       field: "bio",
+    },
+    reset_token: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    reset_token_expiry: {
+      type: DataTypes.DATE,
+      allowNull: true
     },
   },
   {

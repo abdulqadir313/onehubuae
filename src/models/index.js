@@ -10,6 +10,7 @@ const InfluencerCategory = require("./influencer_category");
 const Payment = require("./payment");
 const Review = require("./review");
 const SocialProfile = require("./social_profile");
+const Platform = require("./platform");
 
 // Brand <-> Campaign
 Brand.hasMany(Campaign, { foreignKey: "brand_id" });
@@ -33,6 +34,16 @@ CategoriesModel.belongsToMany(InfluencerModel, {
   through: InfluencerCategory,
   foreignKey: "category_id",
   otherKey: "influencer_id",
+});
+
+Platform.hasMany(SocialProfile, { 
+  foreignKey: "platform_id",
+  as: "social_profiles"
+});
+
+SocialProfile.belongsTo(Platform, { 
+  foreignKey: "platform_id",
+  as: "platform"
 });
 
 // InfluencerCategory junction references
@@ -63,4 +74,5 @@ module.exports = {
   Payment,
   Review,
   SocialProfile,
+  Platform
 };
