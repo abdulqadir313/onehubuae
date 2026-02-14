@@ -1,12 +1,10 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const CategoriesController = require('../controllers/category.controller');
+const CategoriesController = require("../controllers/category.controller");
 
-const {
-  getAllCategories,
-} = CategoriesController();
+const { getAllCategories } = CategoriesController();
 
-router.get('/', getAllCategories);
+router.get("/", getAllCategories);
 
 module.exports = router;

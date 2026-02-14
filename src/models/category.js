@@ -9,29 +9,27 @@ const CategoriesModel = database.define(
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-      field: "category_id",
     },
     name: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      unique: true,
-      field: "category_name",
     },
     slug: {
       type: DataTypes.STRING(120),
       allowNull: true,
-      unique: true,
-      field: "category_slug",
     },
     image: {
       type: DataTypes.STRING(255),
       allowNull: true,
-      field: "category_image",
     },
-    isActive: {
+    is_active: {
       type: DataTypes.TINYINT(1),
+      allowNull: true,
       defaultValue: 1,
-      field: "is_active",
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {

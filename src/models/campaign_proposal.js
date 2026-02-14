@@ -1,60 +1,48 @@
 const { DataTypes } = require("sequelize");
 const database = require("../config/db");
-const { TABLE_NAME_PAYMENTS } = require("../config/table_names");
+const { TABLE_NAME_CAMPAIGN_PROPOSALS } = require("../config/table_names");
 
-const Payment = database.define(
-  TABLE_NAME_PAYMENTS,
+const CampaignProposal = database.define(
+  TABLE_NAME_CAMPAIGN_PROPOSALS,
   {
     id: {
       type: DataTypes.BIGINT,
       autoIncrement: true,
       primaryKey: true,
     },
-    order_id: {
+    campaign_id: {
       type: DataTypes.BIGINT,
       allowNull: true,
     },
-    payer_id: {
+    influencer_id: {
       type: DataTypes.BIGINT,
       allowNull: true,
     },
-    payee_id: {
+    brand_id: {
       type: DataTypes.BIGINT,
       allowNull: true,
     },
-    amount: {
+    message: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    price: {
       type: DataTypes.DECIMAL(12, 2),
       allowNull: true,
     },
-    platform_fee: {
-      type: DataTypes.DECIMAL(12, 2),
-      allowNull: true,
-    },
-    gateway_fee: {
-      type: DataTypes.DECIMAL(12, 2),
-      allowNull: true,
-    },
-    payment_gateway: {
-      type: DataTypes.STRING(50),
-      allowNull: true,
-    },
-    transaction_id: {
-      type: DataTypes.STRING(255),
+    delivery_days: {
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     status_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    paid_at: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
   },
   {
-    tableName: TABLE_NAME_PAYMENTS,
+    tableName: TABLE_NAME_CAMPAIGN_PROPOSALS,
     timestamps: false,
   }
 );
 
-module.exports = Payment;
+module.exports = CampaignProposal;

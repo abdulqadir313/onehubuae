@@ -1,28 +1,28 @@
 const { DataTypes } = require("sequelize");
 const database = require("../config/db");
-const { TABLE_NAME_INFLUENCER_CATEGORIES } = require("../config/table_names");
+const { TABLE_NAME_WISHLIST_ITEMS } = require("../config/table_names");
 
-const InfluencerCategory = database.define(
-  TABLE_NAME_INFLUENCER_CATEGORIES,
+const WishlistItem = database.define(
+  TABLE_NAME_WISHLIST_ITEMS,
   {
     id: {
       type: DataTypes.BIGINT,
       autoIncrement: true,
       primaryKey: true,
     },
-    user_id: {
+    wishlist_id: {
       type: DataTypes.BIGINT,
       allowNull: true,
     },
-    category_id: {
-      type: DataTypes.INTEGER,
+    influencer_id: {
+      type: DataTypes.BIGINT,
       allowNull: true,
     },
   },
   {
-    tableName: TABLE_NAME_INFLUENCER_CATEGORIES,
+    tableName: TABLE_NAME_WISHLIST_ITEMS,
     timestamps: false,
   }
 );
 
-module.exports = InfluencerCategory;
+module.exports = WishlistItem;

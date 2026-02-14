@@ -18,10 +18,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "sync-models": "node scripts/sync-models.js",
+    "sync-models:force": "node scripts/sync-models.js --force",
+    "seed": "node scripts/seed.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "cloudinary": "^2.9.0",
     "cors": "^2.8.6",
     "crypto": "^1.0.1",
     "dotenv": "^17.2.4",
@@ -29,6 +33,8 @@
     "jsonwebtoken": "^9.0.3",
     "moment-timezone": "^0.6.0",
     "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "multer-storage-cloudinary": "^4.0.0",
     "mysql2": "^3.16.3",
     "nodemailer": "^8.0.1",
     "sequelize": "^6.37.7"

@@ -1,78 +1,157 @@
 const database = require("../config/db");
 
-const Brand = require("./brand");
-const Campaign = require("./campaign");
-const CategoriesModel = require("./category");
-const ContentType = require("./content_type");
-const InfluencerModel = require("./influencer");
-const InfluencerCampaign = require("./influencer_campaign");
-const InfluencerCategory = require("./influencer_category");
-const Payment = require("./payment");
-const Review = require("./review");
-const SocialProfile = require("./social_profile");
+const UserType = require("./user_type");
+const UserStatus = require("./user_status");
+const User = require("./user");
+const UserStatusLog = require("./user_status_log");
+const BrandProfile = require("./brand_profile");
+const InfluencerProfile = require("./influencer_profile");
+const Wishlist = require("./wishlist");
+const WishlistItem = require("./wishlist_item");
+const Notification = require("./notification");
 const Platform = require("./platform");
+const SocialAccount = require("./social_account");
+const CategoriesModel = require("./category");
+const InfluencerCategory = require("./influencer_category");
+const Plan = require("./plan");
+const SubscriptionStatus = require("./subscription_status");
+const BrandSubscription = require("./brand_subscription");
+const CampaignStatus = require("./campaign_status");
+const Campaign = require("./campaign");
+const ProposalStatus = require("./proposal_status");
+const CampaignProposal = require("./campaign_proposal");
+const OrderStatus = require("./order_status");
+const Order = require("./order");
+const OrderStatusLog = require("./order_status_log");
+const PaymentStatus = require("./payment_status");
+const Payment = require("./payment");
 
-// Brand <-> Campaign
-Brand.hasMany(Campaign, { foreignKey: "brand_id" });
-Campaign.belongsTo(Brand, { foreignKey: "brand_id" });
+// User module
+User.belongsTo(UserType, { foreignKey: "user_type_id" });
+User.belongsTo(UserStatus, { foreignKey: "status_id" });
+UserType.hasMany(User, { foreignKey: "user_type_id" });
+UserStatus.hasMany(User, { foreignKey: "status_id" });
 
-// Campaign <-> InfluencerCampaign
-Campaign.hasMany(InfluencerCampaign, { foreignKey: "campaign_id" });
-InfluencerCampaign.belongsTo(Campaign, { foreignKey: "campaign_id" });
+UserStatusLog.belongsTo(User, { foreignKey: "user_id" });
+UserStatusLog.belongsTo(UserStatus, { foreignKey: "status_id" });
+UserStatusLog.belongsTo(User, { foreignKey: "changed_by", as: "changedByUser" });
+User.hasMany(UserStatusLog, { foreignKey: "user_id" });
+User.hasMany(UserStatusLog, { foreignKey: "changed_by", as: "statusLogsChangedBy" });
 
-// Influencer <-> InfluencerCampaign
-InfluencerModel.hasMany(InfluencerCampaign, { foreignKey: "influencer_id" });
-InfluencerCampaign.belongsTo(InfluencerModel, { foreignKey: "influencer_id" });
+// Profile module
+BrandProfile.belongsTo(User, { foreignKey: "user_id" });
+User.hasOne(BrandProfile, { foreignKey: "user_id" });
+InfluencerProfile.belongsTo(User, { foreignKey: "user_id" });
+User.hasOne(InfluencerProfile, { foreignKey: "user_id" });
 
-// Influencer <-> Category (many-to-many through InfluencerCategory)
-InfluencerModel.belongsToMany(CategoriesModel, {
+// Wishlist module (brand_id and influencer_id reference users.id)
+Wishlist.belongsTo(User, { foreignKey: "brand_id" });
+User.hasMany(Wishlist, { foreignKey: "brand_id" });
+WishlistItem.belongsTo(Wishlist, { foreignKey: "wishlist_id" });
+WishlistItem.belongsTo(User, { foreignKey: "influencer_id" });
+Wishlist.hasMany(WishlistItem, { foreignKey: "wishlist_id" });
+User.hasMany(WishlistItem, { foreignKey: "influencer_id" });
+
+// Notification module
+Notification.belongsTo(User, { foreignKey: "user_id" });
+User.hasMany(Notification, { foreignKey: "user_id" });
+
+// Social & Category module
+Platform.hasMany(SocialAccount, { foreignKey: "platform_id" });
+SocialAccount.belongsTo(Platform, { foreignKey: "platform_id" });
+SocialAccount.belongsTo(User, { foreignKey: "user_id" });
+User.hasMany(SocialAccount, { foreignKey: "user_id" });
+
+User.belongsToMany(CategoriesModel, {
   through: InfluencerCategory,
-  foreignKey: "influencer_id",
+  foreignKey: "user_id",
   otherKey: "category_id",
 });
-CategoriesModel.belongsToMany(InfluencerModel, {
+CategoriesModel.belongsToMany(User, {
   through: InfluencerCategory,
   foreignKey: "category_id",
-  otherKey: "influencer_id",
+  otherKey: "user_id",
 });
-
-Platform.hasMany(SocialProfile, { 
-  foreignKey: "platform_id",
-  as: "social_profiles"
-});
-
-SocialProfile.belongsTo(Platform, { 
-  foreignKey: "platform_id",
-  as: "platform"
-});
-
-// InfluencerCategory junction references
-InfluencerCategory.belongsTo(InfluencerModel, { foreignKey: "influencer_id" });
+InfluencerCategory.belongsTo(User, { foreignKey: "user_id" });
 InfluencerCategory.belongsTo(CategoriesModel, { foreignKey: "category_id" });
 
-// Influencer <-> SocialProfile
-InfluencerModel.hasMany(SocialProfile, { foreignKey: "influencer_id" });
-SocialProfile.belongsTo(InfluencerModel, { foreignKey: "influencer_id" });
+// Subscription module (brand_id → users.id)
+Plan.hasMany(BrandSubscription, { foreignKey: "plan_id" });
+SubscriptionStatus.hasMany(BrandSubscription, { foreignKey: "status_id" });
+BrandSubscription.belongsTo(User, { foreignKey: "brand_id" });
+BrandSubscription.belongsTo(Plan, { foreignKey: "plan_id" });
+BrandSubscription.belongsTo(SubscriptionStatus, { foreignKey: "status_id" });
+User.hasMany(BrandSubscription, { foreignKey: "brand_id" });
 
-// InfluencerCampaign <-> Payment
-InfluencerCampaign.hasMany(Payment, { foreignKey: "influencer_campaign_id" });
-Payment.belongsTo(InfluencerCampaign, { foreignKey: "influencer_campaign_id" });
+// Campaign module (brand_id → users.id)
+CampaignStatus.hasMany(Campaign, { foreignKey: "status_id" });
+Campaign.belongsTo(User, { foreignKey: "brand_id" });
+Campaign.belongsTo(CampaignStatus, { foreignKey: "status_id" });
+User.hasMany(Campaign, { foreignKey: "brand_id" });
 
-// InfluencerCampaign <-> Review
-InfluencerCampaign.hasMany(Review, { foreignKey: "influencer_campaign_id" });
-Review.belongsTo(InfluencerCampaign, { foreignKey: "influencer_campaign_id" });
+// Proposal module (User as both brand and influencer)
+ProposalStatus.hasMany(CampaignProposal, { foreignKey: "status_id" });
+CampaignProposal.belongsTo(Campaign, { foreignKey: "campaign_id" });
+CampaignProposal.belongsTo(User, { foreignKey: "influencer_id", as: "influencer" });
+CampaignProposal.belongsTo(User, { foreignKey: "brand_id", as: "brand" });
+CampaignProposal.belongsTo(ProposalStatus, { foreignKey: "status_id" });
+Campaign.hasMany(CampaignProposal, { foreignKey: "campaign_id" });
+User.hasMany(CampaignProposal, { foreignKey: "influencer_id", as: "proposalsAsInfluencer" });
+User.hasMany(CampaignProposal, { foreignKey: "brand_id", as: "proposalsAsBrand" });
+
+// Order module (User as both brand and influencer)
+OrderStatus.hasMany(Order, { foreignKey: "status_id" });
+Order.belongsTo(Campaign, { foreignKey: "campaign_id" });
+Order.belongsTo(CampaignProposal, { foreignKey: "proposal_id" });
+Order.belongsTo(User, { foreignKey: "brand_id", as: "brand" });
+Order.belongsTo(User, { foreignKey: "influencer_id", as: "influencer" });
+Order.belongsTo(OrderStatus, { foreignKey: "status_id" });
+Campaign.hasMany(Order, { foreignKey: "campaign_id" });
+CampaignProposal.hasOne(Order, { foreignKey: "proposal_id" });
+User.hasMany(Order, { foreignKey: "brand_id", as: "ordersAsBrand" });
+User.hasMany(Order, { foreignKey: "influencer_id", as: "ordersAsInfluencer" });
+
+OrderStatusLog.belongsTo(Order, { foreignKey: "order_id" });
+OrderStatusLog.belongsTo(OrderStatus, { foreignKey: "status_id" });
+OrderStatusLog.belongsTo(User, { foreignKey: "changed_by", as: "changedByUser" });
+Order.hasMany(OrderStatusLog, { foreignKey: "order_id" });
+User.hasMany(OrderStatusLog, { foreignKey: "changed_by", as: "orderLogsChangedBy" });
+
+// Payment module (User as payer and payee)
+PaymentStatus.hasMany(Payment, { foreignKey: "status_id" });
+Payment.belongsTo(Order, { foreignKey: "order_id" });
+Payment.belongsTo(User, { foreignKey: "payer_id", as: "payer" });
+Payment.belongsTo(User, { foreignKey: "payee_id", as: "payee" });
+Payment.belongsTo(PaymentStatus, { foreignKey: "status_id" });
+Order.hasMany(Payment, { foreignKey: "order_id" });
+User.hasMany(Payment, { foreignKey: "payer_id", as: "paymentsSent" });
+User.hasMany(Payment, { foreignKey: "payee_id", as: "paymentsReceived" });
 
 module.exports = {
   database,
-  Brand,
-  Campaign,
+  UserType,
+  UserStatus,
+  User,
+  UserStatusLog,
+  BrandProfile,
+  InfluencerProfile,
+  Wishlist,
+  WishlistItem,
+  Notification,
+  Platform,
+  SocialAccount,
   CategoriesModel,
-  ContentType,
-  InfluencerModel,
-  InfluencerCampaign,
   InfluencerCategory,
+  Plan,
+  SubscriptionStatus,
+  BrandSubscription,
+  CampaignStatus,
+  Campaign,
+  ProposalStatus,
+  CampaignProposal,
+  OrderStatus,
+  Order,
+  OrderStatusLog,
+  PaymentStatus,
   Payment,
-  Review,
-  SocialProfile,
-  Platform
 };

@@ -14,19 +14,19 @@ const Platform = database.define(
       type: DataTypes.STRING(100),
       allowNull: false,
     },
-    image_url: {
+    icon: {
       type: DataTypes.STRING(255),
       allowNull: true,
     },
     is_active: {
       type: DataTypes.TINYINT(1),
+      allowNull: true,
       defaultValue: 1,
-    }
-    
+    },
   },
   {
     tableName: TABLE_NAME_PLATFORMS,
-    timestamps: true,
+    timestamps: false,
   }
 );
 

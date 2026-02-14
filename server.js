@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const moment = require("moment-timezone");
+var bodyParser = require("body-parser");
 
 const app = express();
 const dbService = require("./src/services/db.service");
@@ -14,6 +15,10 @@ morgan.token("date", () => {
   return moment().tz("Asia/Kolkata").format("YYYY-MM-DD hh:mmA");
 });
 app.use(morgan(":date :method :url :status"));
+
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
+app.use(bodyParser.json());
 
 require("./src/config/routes").set_routes(app);
 

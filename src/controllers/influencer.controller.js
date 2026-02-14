@@ -389,8 +389,56 @@ const resetPassword = async (req, res) => {
     }
   };
 
+  const updateInfluencerProfile = async (req, res) => {
+    try {
+      const influencerId = req.user?.id;
+      if (!influencerId) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized",
+        });
+      }
+
+      const influencer = await InfluencerModel.findByPk(influencerId);
+      if (!influencer) {
+        return res.status(403).json({
+          success: false,
+          message: "User is not an influencer",
+        });
+      }
+
+      if (!req.file || !req.file.path) {
+        return res.status(400).json({
+          success: false,
+          message: "No image file uploaded",
+        });
+      }
+
+      const profilePicUrl = req.file.path;
+      await influencer.update({ profile_pic: profilePicUrl });
+
+      return res.status(200).json({
+        success: true,
+        message: "Profile picture updated",
+        data: { profile_pic: profilePicUrl },
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  };
+
   return {
-    getInfluencersByPlatformId,addInfluencer,login,logout,getInfluencerProfile,forgotPassword,resetPassword
+    getInfluencersByPlatformId,
+    addInfluencer,
+    login,
+    logout,
+    getInfluencerProfile,
+    forgotPassword,
+    resetPassword,
+    updateInfluencerProfile,
   };
 };
 

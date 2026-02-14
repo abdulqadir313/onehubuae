@@ -1,28 +1,32 @@
 const { DataTypes } = require("sequelize");
 const database = require("../config/db");
-const { TABLE_NAME_PAYMENTS } = require("../config/table_names");
+const { TABLE_NAME_ORDERS } = require("../config/table_names");
 
-const Payment = database.define(
-  TABLE_NAME_PAYMENTS,
+const Order = database.define(
+  TABLE_NAME_ORDERS,
   {
     id: {
       type: DataTypes.BIGINT,
       autoIncrement: true,
       primaryKey: true,
     },
-    order_id: {
+    campaign_id: {
       type: DataTypes.BIGINT,
       allowNull: true,
     },
-    payer_id: {
+    proposal_id: {
       type: DataTypes.BIGINT,
       allowNull: true,
     },
-    payee_id: {
+    brand_id: {
       type: DataTypes.BIGINT,
       allowNull: true,
     },
-    amount: {
+    influencer_id: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+    },
+    total_amount: {
       type: DataTypes.DECIMAL(12, 2),
       allowNull: true,
     },
@@ -30,31 +34,27 @@ const Payment = database.define(
       type: DataTypes.DECIMAL(12, 2),
       allowNull: true,
     },
-    gateway_fee: {
+    final_amount: {
       type: DataTypes.DECIMAL(12, 2),
-      allowNull: true,
-    },
-    payment_gateway: {
-      type: DataTypes.STRING(50),
-      allowNull: true,
-    },
-    transaction_id: {
-      type: DataTypes.STRING(255),
       allowNull: true,
     },
     status_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    paid_at: {
+    delivery_date: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    completed_at: {
       type: DataTypes.DATE,
       allowNull: true,
     },
   },
   {
-    tableName: TABLE_NAME_PAYMENTS,
+    tableName: TABLE_NAME_ORDERS,
     timestamps: false,
   }
 );
 
-module.exports = Payment;
+module.exports = Order;

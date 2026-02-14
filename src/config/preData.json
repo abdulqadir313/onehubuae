@@ -1,215 +1,99 @@
 {
-  "categories": [
-    {
-      "name": "Fashion",
-      "slug": "fashion",
-      "image": "https://images.unsplash.com/photo-1605403806790-03de8c07b7c1",
-      "isActive": 1
-    },
-    {
-      "name": "Travel",
-      "slug": "travel",
-      "image": "https://images.unsplash.com/photo-1761852771079-1abd6d5a4440",
-      "isActive": 1
-    },
-    {
-      "name": "Food",
-      "slug": "food",
-      "image": "https://images.unsplash.com/photo-1765278797879-47c9f88cf1c3",
-      "isActive": 1
-    },
-    {
-      "name": "Beauty",
-      "slug": "beauty",
-      "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344",
-      "isActive": 1
-    },
-    {
-      "name": "Lifestyle",
-      "slug": "lifestyle",
-      "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344",
-      "isActive": 1
-    },
-    {
-      "name": "Health & Fitness",
-      "slug": "health-fitness",
-      "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344",
-      "isActive": 1
-    },
-    {
-      "name": "Food & Drink",
-      "slug": "food-drink",
-      "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344",
-      "isActive": 1
-    },
-    {
-      "name": "Family & Children",
-      "slug": "family-children",
-      "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344",
-      "isActive": 1
-    },
-    {
-      "name": "Comedy & Entertainment",
-      "slug": "comedy-entertainment",
-      "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344",
-      "isActive": 1
-    },
-    {
-      "name": "Art & Photography",
-      "slug": "art-photography",
-      "image": null,
-      "isActive": 1
-    },
-    {
-      "name": "Music & Dance",
-      "slug": "music-dance",
-      "image": null,
-      "isActive": 1
-    },
-    {
-      "name": "Model",
-      "slug": "model",
-      "image": null,
-      "isActive": 1
-    },
-    {
-      "name": "Animals & Pets",
-      "slug": "animals-pets",
-      "image": null,
-      "isActive": 1
-    },
-    {
-      "name": "Adventure & Outdoors",
-      "slug": "adventure-outdoors",
-      "image": null,
-      "isActive": 1
-    },
-    {
-      "name": "Entrepreneur & Business",
-      "slug": "entrepreneur-business",
-      "image": null,
-      "isActive": 1
-    },
-    {
-      "name": "Education",
-      "slug": "education",
-      "image": null,
-      "isActive": 1
-    },
-    {
-      "name": "Athlete & Sports",
-      "slug": "athlete-sports",
-      "image": null,
-      "isActive": 1
-    },
-    {
-      "name": "Gaming",
-      "slug": "gaming",
-      "image": null,
-      "isActive": 1
-    },
-    {
-      "name": "Technology",
-      "slug": "technology",
-      "image": null,
-      "isActive": 1
-    },
-    {
-      "name": "Healthcare",
-      "slug": "healthcare",
-      "image": null,
-      "isActive": 1
-    },
-    {
-      "name": "Actor",
-      "slug": "actor",
-      "image": null,
-      "isActive": 1
-    },
-    {
-      "name": "Automotive",
-      "slug": "automotive",
-      "image": null,
-      "isActive": 1
-    }
+  "user_types": [
+    { "type_name": "admin" },
+    { "type_name": "brand" },
+    { "type_name": "influencer" }
   ],
-  "content_types": [
-    {
-      "name": "Reel"
-    },
-    {
-      "name": "Story"
-    },
-    {
-      "name": "Post"
-    }
+  "user_status": [
+    { "status_name": "active", "description": "User account is active" },
+    { "status_name": "suspended", "description": "Account temporarily suspended" },
+    { "status_name": "blocked", "description": "Account blocked" },
+    { "status_name": "deleted", "description": "Account deleted" },
+    { "status_name": "pending_verification", "description": "Awaiting email or identity verification" }
   ],
-  "influencers": [
-    {
-      "fullName": "Houra Mirhashemi",
-      "email": "hulya_dxb@gmail.com",
-      "phone": null,
-      "country": "United Arab Emirates",
-      "city": "Dubai",
-      "profilePic": "https://onehub.ae/wp-content/uploads/2025/10/hulya_dxb.jpg",
-      "bio": "ʙᴜꜱɪɴᴇꜱꜱ ᴏᴡɴᴇʀ | ᴀʀᴄʜɪᴛᴇᴄᴛ | ɪɴᴛᴇʀɪᴏʀ ᴅᴇꜱɪɢɴᴇʀ"
-    },
-    {
-      "fullName": "APARNA",
-      "email": "workwithaparna03@gmail.com",
-      "phone": "9899899898",
-      "country": "UAE",
-      "city": "Dubai",
-      "profilePic": "https://instagram.fpgh2-1.fna.fbcdn.net/v/t51.2885-19/610682319_17905761282317076_6789158323520136508_n.jpg",
-      "bio": "Sharing pretty much everything that I love and creating the life I once dreamed"
-    }
+  "subscription_status": [
+    { "status_name": "active" },
+    { "status_name": "expired" },
+    { "status_name": "cancelled" },
+    { "status_name": "pending" }
+  ],
+  "campaign_status": [
+    { "status_name": "draft" },
+    { "status_name": "active" },
+    { "status_name": "paused" },
+    { "status_name": "completed" },
+    { "status_name": "cancelled" }
+  ],
+  "proposal_status": [
+    { "status_name": "pending" },
+    { "status_name": "accepted" },
+    { "status_name": "rejected" },
+    { "status_name": "withdrawn" },
+    { "status_name": "completed" }
+  ],
+  "order_status": [
+    { "status_name": "pending", "description": "Order created" },
+    { "status_name": "payment_pending", "description": "Awaiting payment" },
+    { "status_name": "confirmed", "description": "Payment confirmed" },
+    { "status_name": "in_progress", "description": "Work in progress" },
+    { "status_name": "submitted", "description": "Deliverable submitted" },
+    { "status_name": "revision_requested", "description": "Revision requested by brand" },
+    { "status_name": "approved", "description": "Deliverable approved" },
+    { "status_name": "completed", "description": "Order completed" },
+    { "status_name": "cancelled", "description": "Order cancelled" },
+    { "status_name": "disputed", "description": "Under dispute" },
+    { "status_name": "refunded", "description": "Payment refunded" }
+  ],
+  "payment_status": [
+    { "status_name": "pending" },
+    { "status_name": "processing" },
+    { "status_name": "paid" },
+    { "status_name": "failed" },
+    { "status_name": "refunded" }
   ],
   "platforms": [
-    {
-      "name": "Instagram",
-      "image_url": "https://www.instagram.com/hulya_dxb/",
-      "is_active": 1
-    },
-    {
-      "name": "YouTube",
-      "image_url": "https://www.youtube.com/hulya_dxb/",
-      "is_active": 1
-    }
+    { "name": "Instagram", "icon": null, "is_active": 1 },
+    { "name": "YouTube", "icon": null, "is_active": 1 },
+    { "name": "TikTok", "icon": null, "is_active": 1 }
   ],
-  "social_profiles": [
-    {
-      "influencer_id": 1,
-      "platform_id": 1,
-      "username": "hulya_dxb",
-      "profile_url": "https://www.instagram.com/hulya_dxb/",
-      "followers": 1000,
-      "engagement_rate": 10
-    },
-    {
-      "influencer_id": 1,
-      "platform_id": 2,
-      "username": "aparna._.abhishek",
-      "profile_url": "https://www.instagram.com/hulya_dxb/",
-      "followers": 1000,
-      "engagement_rate": 10
-    }
+  "categories": [
+    { "name": "Fashion", "slug": "fashion", "image": "https://images.unsplash.com/photo-1605403806790-03de8c07b7c1", "is_active": 1 },
+    { "name": "Travel", "slug": "travel", "image": "https://images.unsplash.com/photo-1761852771079-1abd6d5a4440", "is_active": 1 },
+    { "name": "Food", "slug": "food", "image": "https://images.unsplash.com/photo-1765278797879-47c9f88cf1c3", "is_active": 1 },
+    { "name": "Beauty", "slug": "beauty", "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344", "is_active": 1 },
+    { "name": "Lifestyle", "slug": "lifestyle", "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344", "is_active": 1 },
+    { "name": "Health & Fitness", "slug": "health-fitness", "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344", "is_active": 1 },
+    { "name": "Food & Drink", "slug": "food-drink", "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344", "is_active": 1 },
+    { "name": "Family & Children", "slug": "family-children", "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344", "is_active": 1 },
+    { "name": "Comedy & Entertainment", "slug": "comedy-entertainment", "image": "https://images.unsplash.com/photo-1653640869615-e9878a2c8344", "is_active": 1 },
+    { "name": "Art & Photography", "slug": "art-photography", "image": null, "is_active": 1 },
+    { "name": "Music & Dance", "slug": "music-dance", "image": null, "is_active": 1 },
+    { "name": "Model", "slug": "model", "image": null, "is_active": 1 },
+    { "name": "Animals & Pets", "slug": "animals-pets", "image": null, "is_active": 1 },
+    { "name": "Adventure & Outdoors", "slug": "adventure-outdoors", "image": null, "is_active": 1 },
+    { "name": "Entrepreneur & Business", "slug": "entrepreneur-business", "image": null, "is_active": 1 },
+    { "name": "Education", "slug": "education", "image": null, "is_active": 1 },
+    { "name": "Athlete & Sports", "slug": "athlete-sports", "image": null, "is_active": 1 },
+    { "name": "Gaming", "slug": "gaming", "image": null, "is_active": 1 },
+    { "name": "Technology", "slug": "technology", "image": null, "is_active": 1 },
+    { "name": "Healthcare", "slug": "healthcare", "image": null, "is_active": 1 },
+    { "name": "Actor", "slug": "actor", "image": null, "is_active": 1 },
+    { "name": "Automotive", "slug": "automotive", "image": null, "is_active": 1 }
   ],
-  "influencer_categories": [
-    {
-      "influencer_id": 1,
-      "category_id": 1
-    },
-    {
-      "influencer_id": 2,
-      "category_id": 2
-    },
-    {
-      "influencer_id": 2,
-      "category_id": 3
-    },
-    {
-      "influencer_id": 2,
-      "category_id": 4
+  "plans": [
+    { "name": "Free", "price": 0, "currency": "USD", "campaign_limit": 1, "influencer_invite_limit": 5, "wishlist_limit": 1, "chat_enabled": 0, "priority_support": 0, "duration_days": 30, "is_active": 1 },
+    { "name": "Starter", "price": 99, "currency": "USD", "campaign_limit": 5, "influencer_invite_limit": 25, "wishlist_limit": 3, "chat_enabled": 1, "priority_support": 0, "duration_days": 30, "is_active": 1 },
+    { "name": "Pro", "price": 299, "currency": "USD", "campaign_limit": 20, "influencer_invite_limit": 100, "wishlist_limit": 10, "chat_enabled": 1, "priority_support": 1, "duration_days": 30, "is_active": 1 },
+    { "name": "Enterprise", "price": 999, "currency": "USD", "campaign_limit": null, "influencer_invite_limit": null, "wishlist_limit": null, "chat_enabled": 1, "priority_support": 1, "duration_days": 30, "is_active": 1 }
+  ],
+  "users": [
+    { "name": "Super Admin",
+      "email": "admin@onehub.ae",
+      "password": "Admin@123",
+      "user_type_id": 1,
+      "status_id": 1,
+      "is_verified": 1,
+      "is_active": 1
     }
   ]
 }

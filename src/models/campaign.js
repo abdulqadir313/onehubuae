@@ -5,21 +5,29 @@ const { TABLE_NAME_CAMPAIGNS } = require("../config/table_names");
 const Campaign = database.define(
   TABLE_NAME_CAMPAIGNS,
   {
-    campaign_id: {
+    id: {
       type: DataTypes.BIGINT,
       autoIncrement: true,
       primaryKey: true,
     },
     brand_id: {
       type: DataTypes.BIGINT,
-      allowNull: false,
+      allowNull: true,
     },
-    name: {
+    title: {
       type: DataTypes.STRING(255),
       allowNull: true,
     },
     description: {
       type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    budget_min: {
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: true,
+    },
+    budget_max: {
+      type: DataTypes.DECIMAL(12, 2),
       allowNull: true,
     },
     start_date: {
@@ -30,20 +38,14 @@ const Campaign = database.define(
       type: DataTypes.DATEONLY,
       allowNull: true,
     },
-    budget: {
-      type: DataTypes.DECIMAL(15, 2),
+    status_id: {
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
-    status: {
-      type: DataTypes.ENUM("draft", "active", "completed", "paused"),
-      allowNull: true,
-    }
   },
   {
     tableName: TABLE_NAME_CAMPAIGNS,
-    timestamps: true,
-    createdAt: "created_at",
-    updatedAt: false,
+    timestamps: false,
   }
 );
 

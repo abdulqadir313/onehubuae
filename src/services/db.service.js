@@ -14,7 +14,9 @@ const dbService = (environment, migrate = process.env.MIGRATE === "true") => {
   };
 
   const successfulDBStart = async () => {
-    console.info("connection to the database has been established successfully");
+    console.info(
+      "connection to the database has been established successfully",
+    );
     await initiatePreData();
   };
 
@@ -23,7 +25,7 @@ const dbService = (environment, migrate = process.env.MIGRATE === "true") => {
 
   const wrongEnvironment = () => {
     console.warn(
-      `only development, staging, test and production are valid NODE_ENV variables but ${environment} is specified`
+      `only development, staging, test and production are valid NODE_ENV variables but ${environment} is specified`,
     );
     return process.exit(1);
   };
@@ -57,8 +59,6 @@ const dbService = (environment, migrate = process.env.MIGRATE === "true") => {
       return errorDBStart(err);
     }
   };
-
-
 
   const startStage = async () => {
     try {

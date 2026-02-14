@@ -18,7 +18,7 @@ const ContentType = database.define(
   {
     tableName: TABLE_NAME_CONTENT_TYPES,
     timestamps: true,
-  }
+  },
 );
 
 module.exports = ContentType;
