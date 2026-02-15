@@ -38,7 +38,7 @@ const Notification = database.define(
   },
   {
     tableName: TABLE_NAME_NOTIFICATIONS,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

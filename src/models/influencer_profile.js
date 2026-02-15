@@ -35,7 +35,7 @@ const InfluencerProfile = database.define(
   },
   {
     tableName: TABLE_NAME_INFLUENCER_PROFILES,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

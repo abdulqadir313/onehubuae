@@ -3,27 +3,35 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const moment = require("moment-timezone");
-var bodyParser = require("body-parser");
+const helmet = require("helmet");
+const compression = require("compression");
 
 const app = express();
 const dbService = require("./src/services/db.service");
 
-app.use(cors());
+const corsOptions = process.env.CORS_ORIGIN
+  ? { origin: process.env.CORS_ORIGIN.split(",").map((o) => o.trim()) }
+  : {};
+
+app.use(cors(corsOptions));
+app.use(helmet());
+app.use(compression());
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 morgan.token("date", () => {
   return moment().tz("Asia/Kolkata").format("YYYY-MM-DD hh:mmA");
 });
 app.use(morgan(":date :method :url :status"));
 
-app.use(bodyParser.urlencoded({ extended: false }));
-// parse application/json
-app.use(bodyParser.json());
-
 require("./src/config/routes").set_routes(app);
 
 app.get("/", (req, res) => {
   res.send("API working!");
+});
+
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: "The requested route is not found." });
 });
 
 const PORT = process.env.PORT || 3000;

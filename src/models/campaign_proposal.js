@@ -41,7 +41,7 @@ const CampaignProposal = database.define(
   },
   {
     tableName: TABLE_NAME_CAMPAIGN_PROPOSALS,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

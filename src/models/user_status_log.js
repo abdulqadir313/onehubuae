@@ -29,7 +29,7 @@ const UserStatusLog = database.define(
   },
   {
     tableName: TABLE_NAME_USER_STATUS_LOGS,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

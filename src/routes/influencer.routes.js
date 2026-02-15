@@ -1,27 +1,24 @@
 const express = require("express");
 const router = express.Router();
 const InfluencerController = require("../controllers/influencer.controller");
-const authMiddleware = require("../middlewares/auth.middleware");
+const jwtController = require("../config/jwtVerify");
+const { USER_TYPES } = require("../utils/constants");
 const { uploadImage } = require("../handlers/uploadImage");
 
 const {
-  getInfluencersByPlatformId,
-  addInfluencer,
-  login,
-  logout,
   getInfluencerProfile,
-  forgotPassword,
-  resetPassword,
   updateInfluencerProfile,
+  getInfluencersByPlatformId,
+  updateInfluencersPlatform,
+  updateInfluencerCategories,
 } = InfluencerController();
 
-router.post("/get-influencers-by-platform", getInfluencersByPlatformId);
-router.get("/profile", authMiddleware, getInfluencerProfile);
-router.post("/addInfluencer", addInfluencer);
-router.post("/login", login);
-router.post("/logout", logout);
-router.post("/forgot-password", forgotPassword);
-router.post("/reset-password", resetPassword);
-router.post("/update-influencer-profile", authMiddleware, uploadImage.single("image"), updateInfluencerProfile);
+router.use(jwtController.protect);
+router.use(jwtController.allowRoles(USER_TYPES.INFLUENCER));
+router.get("/get-profile", getInfluencerProfile);
+router.put("/update-profile", uploadImage.single("image"), updateInfluencerProfile);
+router.post("/influencers-by-platform", getInfluencersByPlatformId);
+router.put("/update-platforms", updateInfluencersPlatform);
+router.put("/update-categories", updateInfluencerCategories);
 
 module.exports = router;

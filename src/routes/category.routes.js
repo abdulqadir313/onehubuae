@@ -5,6 +5,6 @@ const CategoriesController = require("../controllers/category.controller");
 
 const { getAllCategories } = CategoriesController();
 
-router.get("/", getAllCategories);
+router.get("/get-all-categories", getAllCategories);
 
 module.exports = router;

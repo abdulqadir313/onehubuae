@@ -29,7 +29,7 @@ const OrderStatusLog = database.define(
   },
   {
     tableName: TABLE_NAME_ORDER_STATUS_LOGS,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

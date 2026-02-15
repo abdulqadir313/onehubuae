@@ -45,7 +45,7 @@ const Campaign = database.define(
   },
   {
     tableName: TABLE_NAME_CAMPAIGNS,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

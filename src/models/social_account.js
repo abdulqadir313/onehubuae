@@ -35,16 +35,10 @@ const SocialAccount = database.define(
       type: DataTypes.DECIMAL(5, 2),
       allowNull: true,
     },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
   },
   {
     tableName: TABLE_NAME_SOCIAL_ACCOUNTS,
     timestamps: true,
-    createdAt: "created_at",
-    updatedAt: false,
   }
 );
 

@@ -34,7 +34,7 @@ const InfluencerCampaign = database.define(
   },
   {
     tableName: TABLE_NAME_INFLUENCER_CAMPAIGNS,
-    timestamps: false,
+    timestamps: true,
   },
 );
 

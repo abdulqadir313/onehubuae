@@ -13,12 +13,11 @@ const UserType = database.define(
     type_name: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      unique: true,
     },
   },
   {
     tableName: TABLE_NAME_USER_TYPES,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

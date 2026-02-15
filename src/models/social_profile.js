@@ -46,7 +46,7 @@ const SocialProfile = database.define(
   },
   {
     tableName: TABLE_NAME_SOCIAL_PROFILES,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

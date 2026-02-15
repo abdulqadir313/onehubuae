@@ -76,7 +76,7 @@ const User = database.define(
   },
   {
     tableName: TABLE_NAME_USERS,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

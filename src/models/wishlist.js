@@ -21,7 +21,7 @@ const Wishlist = database.define(
   },
   {
     tableName: TABLE_NAME_WISHLISTS,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

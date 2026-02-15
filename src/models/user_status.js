@@ -22,7 +22,7 @@ const UserStatus = database.define(
   },
   {
     tableName: TABLE_NAME_USER_STATUS,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

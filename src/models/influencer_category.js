@@ -21,7 +21,7 @@ const InfluencerCategory = database.define(
   },
   {
     tableName: TABLE_NAME_INFLUENCER_CATEGORIES,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

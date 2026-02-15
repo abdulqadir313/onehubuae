@@ -40,18 +40,13 @@ const storage = new CloudinaryStorage({
 const uploadImage = multer({
   storage,
   fileFilter: (req, file, callback) => {
-    if (req.body.image_updated === "false") {
+    // Only skip when client explicitly says no new image (body may not be parsed yet in multipart)
+    if (req.body.image_updated && req.body.image_updated === "false")
       return callback(null, false);
-    }
-
-    if (!file.mimetype.startsWith("image/")) {
-      return callback(new Error("Only image files allowed"), false);
-    }
-
-    callback(null, true);
+    return callback(null, true);
   },
   limits: {
-    fileSize: 1024 * 1024 * 20, // 20MB
+    fileSize: 1024 * 1024 * 100, // 100mb file size
   },
 });
 

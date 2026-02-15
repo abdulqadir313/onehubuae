@@ -53,7 +53,7 @@ const Order = database.define(
   },
   {
     tableName: TABLE_NAME_ORDERS,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

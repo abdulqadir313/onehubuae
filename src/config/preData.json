@@ -1,8 +1,8 @@
 {
   "user_types": [
-    { "type_name": "admin" },
-    { "type_name": "brand" },
-    { "type_name": "influencer" }
+    { "type_name": "SUPER_ADMIN" },
+    { "type_name": "BRAND" },
+    { "type_name": "INFLUENCER" }
   ],
   "user_status": [
     { "status_name": "active", "description": "User account is active" },
@@ -15,7 +15,9 @@
     { "status_name": "active" },
     { "status_name": "expired" },
     { "status_name": "cancelled" },
-    { "status_name": "pending" }
+    { "status_name": "pending" },
+    { "status_name": "upgraded" },
+    { "status_name": "scheduled" }
   ],
   "campaign_status": [
     { "status_name": "draft" },

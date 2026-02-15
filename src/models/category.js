@@ -27,16 +27,10 @@ const CategoriesModel = database.define(
       allowNull: true,
       defaultValue: 1,
     },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
   },
   {
     tableName: TABLE_NAME_CATEGORIES,
     timestamps: true,
-    createdAt: "created_at",
-    updatedAt: false,
   }
 );
 

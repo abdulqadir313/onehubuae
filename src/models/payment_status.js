@@ -17,7 +17,7 @@ const PaymentStatus = database.define(
   },
   {
     tableName: TABLE_NAME_PAYMENT_STATUS,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

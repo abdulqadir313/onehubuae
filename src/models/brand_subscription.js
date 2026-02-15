@@ -15,7 +15,7 @@ const BrandSubscription = database.define(
       allowNull: true,
     },
     plan_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: true,
     },
     start_date: {
@@ -34,10 +34,44 @@ const BrandSubscription = database.define(
       type: DataTypes.TINYINT(1),
       allowNull: true,
     },
+    is_current: {
+      type: DataTypes.TINYINT(1),
+      allowNull: true,
+      defaultValue: 1,
+    },
+    amount_paid: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+    },
+    payment_id: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+    },
+    duration_days: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    plan_name_snapshot: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+    cancel_at_period_end: {
+      type: DataTypes.TINYINT(1),
+      allowNull: true,
+      defaultValue: 0,
+    },
+    upgraded_from_subscription_id: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+    },
+    notes: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   },
   {
     tableName: TABLE_NAME_BRAND_SUBSCRIPTIONS,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

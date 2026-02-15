@@ -31,10 +31,14 @@ const BrandProfile = database.define(
       type: DataTypes.STRING(50),
       allowNull: true,
     },
+    cover_image: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
   },
   {
     tableName: TABLE_NAME_BRAND_PROFILES,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

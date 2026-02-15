@@ -17,7 +17,7 @@ const SubscriptionStatus = database.define(
   },
   {
     tableName: TABLE_NAME_SUBSCRIPTION_STATUS,
-    timestamps: false,
+    timestamps: true,
   }
 );
 

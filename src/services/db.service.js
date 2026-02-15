@@ -2,11 +2,19 @@ const database = require("../config/db");
 require("../models");
 const initiatePreData = require("../utils/initiatePreData");
 
-const dbService = (environment, migrate = process.env.MIGRATE === "true") => {
+const dbService = (
+  environment,
+  migrate = process.env.NODE_ENV === "development" &&
+    process.env.DB_MIGRATE === "true",
+) => {
   const authenticateDB = () => database.authenticate();
 
   const syncDB = async () => {
     await database.sync({ alter: true, force: false });
+  };
+
+  const syncDBProd = async () => {
+    await database.sync({ alter: false, force: false });
   };
 
   const syncDBForce = async () => {
@@ -81,9 +89,10 @@ const dbService = (environment, migrate = process.env.MIGRATE === "true") => {
   const startProd = async () => {
     try {
       await authenticateDB();
-      return startMigrateFalse();
+      await syncDBProd();
+      await successfulDBStart();
     } catch (err) {
-      return errorDBStart(err);
+      errorDBStart(err);
     }
   };
 

@@ -21,15 +21,17 @@
     "start": "node server.js",
     "sync-models": "node scripts/sync-models.js",
     "sync-models:force": "node scripts/sync-models.js --force",
-    "seed": "node scripts/seed.js"
+    "seed": "node scripts/seed.js", 
+    "testing": "nodemon --exec cross-env NODE_ENV=testing node server.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.9.0",
+    "compression": "^1.7.4",
     "cors": "^2.8.6",
-    "crypto": "^1.0.1",
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
+    "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.3",
     "moment-timezone": "^0.6.0",
     "morgan": "^1.10.1",

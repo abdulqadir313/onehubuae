@@ -53,7 +53,7 @@ const Payment = database.define(
   },
   {
     tableName: TABLE_NAME_PAYMENTS,
-    timestamps: false,
+    timestamps: true,
   }
 );
 
