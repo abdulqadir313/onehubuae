@@ -42,10 +42,7 @@ const protect = async (req, res, next) => {
       });
     }
 
-    req.user = {
-      id: user.id,
-      user_type: user.user_type_id,
-    };
+    req.user = user;
     next();
   } catch (error) {
     return res.status(401).json({
