@@ -33,6 +33,7 @@ const protect = async (req, res, next) => {
     const decoded = jwt.verify(token, getJwtSecret());
     const user = await User.findOne({
       where: { id: decoded.id, is_active: 1 },
+      attributes: ["id", "user_type_id"],
     });
     if (!user) {
       return res.status(401).json({
@@ -41,7 +42,8 @@ const protect = async (req, res, next) => {
       });
     }
 
-    req.user = user.toJSON();
+    req.user.id = user.id;
+    req.user.user_type = user.user_type_id;
     next();
   } catch (error) {
     return res.status(401).json({
