@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_INFLUENCER_PROFILES } = require("../config/table_names");
 
-const InfluencerProfile = database.define(
+const InfluencerProfileModel = database.define(
   TABLE_NAME_INFLUENCER_PROFILES,
   {
     id: {
@@ -39,4 +39,4 @@ const InfluencerProfile = database.define(
   }
 );
 
-module.exports = InfluencerProfile;
+module.exports = InfluencerProfileModel;

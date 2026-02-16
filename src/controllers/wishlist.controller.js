@@ -1,4 +1,4 @@
-const { Wishlist, WishlistItem, User, InfluencerProfile } = require("../models");
+const { WishlistModel, WishlistItemModel, UserModel, InfluencerProfileModel } = require("../models");
 
 const WishlistController = () => {
   /**
@@ -19,7 +19,7 @@ const WishlistController = () => {
         });
       }
       
-      const wishlist = await Wishlist.create({
+      const wishlist = await WishlistModel.create({
         brand_id: userId,
         wishlist_name: wishlist_name || null,
       });
@@ -54,7 +54,7 @@ const WishlistController = () => {
         });
       }
 
-      const wishlist = await Wishlist.findOne({
+      const wishlist = await WishlistModel.findOne({
         where: { id: wishlist_id, brand_id: userId },
       });
       if (!wishlist) {
@@ -64,7 +64,7 @@ const WishlistController = () => {
         });
       }
 
-      const existing = await WishlistItem.findOne({
+      const existing = await WishlistItemModel.findOne({
         where: { wishlist_id, influencer_id },
       });
       if (existing) {
@@ -74,7 +74,7 @@ const WishlistController = () => {
         });
       }
 
-      await WishlistItem.create({ wishlist_id, influencer_id });
+      await WishlistItemModel.create({ wishlist_id, influencer_id });
 
       return res.status(201).json({
         success: true,
@@ -98,16 +98,16 @@ const WishlistController = () => {
     try {
       const userId = req.user.id;
 
-      const wishlists = await Wishlist.findAll({
+      const wishlists = await WishlistModel.findAll({
         where: { brand_id: userId },
         include: [
           {
-            model: WishlistItem,
+            model: WishlistItemModel,
             include: [
               {
-                model: User,
+                model: UserModel,
                 attributes: { exclude: ["password"] },
-                include: [{ model: InfluencerProfile, attributes: ["id", "display_name", "price_start"] }],
+                include: [{ model: InfluencerProfileModel, attributes: ["id", "display_name", "price_start"] }],
               },
             ],
           },
@@ -137,16 +137,16 @@ const WishlistController = () => {
       const userId = req.user.id;
 
       const { id } = req.query;
-      const wishlist = await Wishlist.findOne({
+      const wishlist = await WishlistModel.findOne({
         where: { id, brand_id: userId },
         include: [
           {
-            model: WishlistItem,
+            model: WishlistItemModel,
             include: [
               {
-                model: User,
+                model: UserModel,
                 attributes: { exclude: ["password"] },
-                include: [{ model: InfluencerProfile, attributes: ["id", "display_name", "price_start"] }],
+                include: [{ model: InfluencerProfileModel, attributes: ["id", "display_name", "price_start"] }],
               },
             ],
           },

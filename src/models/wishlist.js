@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_WISHLISTS } = require("../config/table_names");
 
-const Wishlist = database.define(
+const WishlistModel = database.define(
   TABLE_NAME_WISHLISTS,
   {
     id: {
@@ -25,4 +25,4 @@ const Wishlist = database.define(
   }
 );
 
-module.exports = Wishlist;
+module.exports = WishlistModel;

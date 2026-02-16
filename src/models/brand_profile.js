@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_BRAND_PROFILES } = require("../config/table_names");
 
-const BrandProfile = database.define(
+const BrandProfileModel = database.define(
   TABLE_NAME_BRAND_PROFILES,
   {
     id: {
@@ -42,4 +42,4 @@ const BrandProfile = database.define(
   }
 );
 
-module.exports = BrandProfile;
+module.exports = BrandProfileModel;

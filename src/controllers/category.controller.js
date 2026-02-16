@@ -1,6 +1,5 @@
-const db = require("../config/db");
-const CategoriesModel = require("../models/category");
-const SocialProfile = require("../models/social_profile");
+const { CategoriesModel } = require("../models");
+
 const CategoriesController = () => {
   /**
    * @description Get all active categories

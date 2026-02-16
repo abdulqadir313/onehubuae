@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_PAYMENT_STATUS } = require("../config/table_names");
 
-const PaymentStatus = database.define(
+const PaymentStatusModel = database.define(
   TABLE_NAME_PAYMENT_STATUS,
   {
     id: {
@@ -21,4 +21,4 @@ const PaymentStatus = database.define(
   }
 );
 
-module.exports = PaymentStatus;
+module.exports = PaymentStatusModel;

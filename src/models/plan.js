@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_PLANS } = require("../config/table_names");
 
-const Plan = database.define(
+const PlanModel = database.define(
   TABLE_NAME_PLANS,
   {
     id: {
@@ -57,4 +57,4 @@ const Plan = database.define(
   }
 );
 
-module.exports = Plan;
+module.exports = PlanModel;

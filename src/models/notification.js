@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_NOTIFICATIONS } = require("../config/table_names");
 
-const Notification = database.define(
+const NotificationModel = database.define(
   TABLE_NAME_NOTIFICATIONS,
   {
     id: {
@@ -42,4 +42,4 @@ const Notification = database.define(
   }
 );
 
-module.exports = Notification;
+module.exports = NotificationModel;

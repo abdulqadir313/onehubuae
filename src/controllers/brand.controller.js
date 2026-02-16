@@ -1,11 +1,11 @@
 const {
-  User,
-  BrandProfile,
-  UserType,
-  UserStatus,
-  Wishlist,
-  WishlistItem,
-  InfluencerProfile,
+  UserModel,
+  BrandProfileModel,
+  UserTypeModel,
+  UserStatusModel,
+  WishlistModel,
+  WishlistItemModel,
+  InfluencerProfileModel,
 } = require("../models");
 const { deleteImage } = require("../handlers/uploadImage");
 
@@ -20,12 +20,12 @@ const BrandController = () => {
     try {
       const userId = req.user.id;
 
-      const user = await User.findByPk(userId, {
+      const user = await UserModel.findByPk(userId, {
         attributes: { exclude: ["password"] },
         include: [
-          { model: UserType, attributes: ["id", "type_name"] },
-          { model: UserStatus, attributes: ["id", "status_name"] },
-          { model: BrandProfile, required: true },
+          { model: UserTypeModel, attributes: ["id", "type_name"] },
+          { model: UserStatusModel, attributes: ["id", "status_name"] },
+          { model: BrandProfileModel, required: true },
         ],
       });
 
@@ -59,7 +59,7 @@ const BrandController = () => {
       const userId = req.user.id;
 
       const { company_name, industry, website, company_size } = req.body;
-      const profile = await BrandProfile.findOne({
+      const profile = await BrandProfileModel.findOne({
         where: { user_id: userId },
       });
 
@@ -107,7 +107,7 @@ const BrandController = () => {
         });
       }
 
-      const profile = await BrandProfile.findOne({
+      const profile = await BrandProfileModel.findOne({
         where: { user_id: userId },
       });
       if (!profile) {

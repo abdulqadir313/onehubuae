@@ -1,4 +1,4 @@
-const { Plan, BrandSubscription, SubscriptionStatus } = require("../models");
+const { PlanModel, BrandSubscriptionModel, SubscriptionStatusModel } = require("../models");
 
 // Subscription status IDs (match preData order: active, expired, cancelled, pending, upgraded, scheduled)
 const SUB_ACTIVE = 1;
@@ -8,8 +8,8 @@ const SUB_UPGRADED = 5;
 const SUB_SCHEDULED = 6;
 
 const subscriptionInclude = [
-  { model: Plan },
-  { model: SubscriptionStatus, attributes: ["id", "status_name"] },
+  { model: PlanModel },
+  { model: SubscriptionStatusModel, attributes: ["id", "status_name"] },
 ];
 
 const PlanController = () => {
@@ -18,7 +18,7 @@ const PlanController = () => {
    */
   const getActivePlans = async (req, res) => {
     try {
-      const plans = await Plan.findAll({
+      const plans = await PlanModel.findAll({
         where: { is_active: 1 },
       });
       return res.status(200).json({
@@ -45,7 +45,7 @@ const PlanController = () => {
           message: "id is required (query).",
         });
       }
-      const plan = await Plan.findOne({
+      const plan = await PlanModel.findOne({
         where: { id, is_active: 1 },
       });
       if (!plan) {
@@ -72,7 +72,7 @@ const PlanController = () => {
   const getMyCurrentPlan = async (req, res) => {
     try {
       const userId = req.user.id;
-      const subscription = await BrandSubscription.findOne({
+      const subscription = await BrandSubscriptionModel.findOne({
         where: { brand_id: userId, is_current: 1, status_id: SUB_ACTIVE },
         include: subscriptionInclude,
       });
@@ -110,7 +110,7 @@ const PlanController = () => {
         });
       }
 
-      const existing = await BrandSubscription.findOne({
+      const existing = await BrandSubscriptionModel.findOne({
         where: { brand_id: userId, is_current: 1, status_id: SUB_ACTIVE },
       });
       if (existing) {
@@ -121,7 +121,7 @@ const PlanController = () => {
         });
       }
 
-      const plan = await Plan.findOne({ where: { id: plan_id, is_active: 1 } });
+      const plan = await PlanModel.findOne({ where: { id: plan_id, is_active: 1 } });
       if (!plan) {
         return res.status(404).json({
           success: false,
@@ -134,7 +134,7 @@ const PlanController = () => {
       const endDate = new Date();
       endDate.setDate(endDate.getDate() + durationDays);
 
-      const subscription = await BrandSubscription.create({
+      const subscription = await BrandSubscriptionModel.create({
         brand_id: userId,
         plan_id: plan.id,
         start_date: startDate,
@@ -149,7 +149,7 @@ const PlanController = () => {
         cancel_at_period_end: 0,
       });
 
-      const withPlan = await BrandSubscription.findByPk(subscription.id, {
+      const withPlan = await BrandSubscriptionModel.findByPk(subscription.id, {
         include: subscriptionInclude,
       });
       return res.status(201).json({
@@ -180,11 +180,11 @@ const PlanController = () => {
         });
       }
 
-      const current = await BrandSubscription.findOne({
+      const current = await BrandSubscriptionModel.findOne({
         where: { brand_id: userId, is_current: 1, status_id: SUB_ACTIVE },
       });
 
-      const plan = await Plan.findOne({ where: { id: plan_id, is_active: 1 } });
+      const plan = await PlanModel.findOne({ where: { id: plan_id, is_active: 1 } });
       if (!plan) {
         return res.status(404).json({
           success: false,
@@ -201,7 +201,7 @@ const PlanController = () => {
         await current.update({ is_current: 0, status_id: SUB_UPGRADED });
       }
 
-      const subscription = await BrandSubscription.create({
+      const subscription = await BrandSubscriptionModel.create({
         brand_id: userId,
         plan_id: plan.id,
         start_date: startDate,
@@ -217,7 +217,7 @@ const PlanController = () => {
         upgraded_from_subscription_id: current ? current.id : null,
       });
 
-      const withPlan = await BrandSubscription.findByPk(subscription.id, {
+      const withPlan = await BrandSubscriptionModel.findByPk(subscription.id, {
         include: subscriptionInclude,
       });
       return res.status(200).json({
@@ -248,7 +248,7 @@ const PlanController = () => {
         });
       }
 
-      const current = await BrandSubscription.findOne({
+      const current = await BrandSubscriptionModel.findOne({
         where: { brand_id: userId, is_current: 1, status_id: SUB_ACTIVE },
       });
       if (!current) {
@@ -258,7 +258,7 @@ const PlanController = () => {
         });
       }
 
-      const plan = await Plan.findOne({ where: { id: plan_id, is_active: 1 } });
+      const plan = await PlanModel.findOne({ where: { id: plan_id, is_active: 1 } });
       if (!plan) {
         return res.status(404).json({
           success: false,
@@ -271,7 +271,7 @@ const PlanController = () => {
       const endDate = new Date(startDate);
       endDate.setDate(endDate.getDate() + durationDays);
 
-      const scheduled = await BrandSubscription.create({
+      const scheduled = await BrandSubscriptionModel.create({
         brand_id: userId,
         plan_id: plan.id,
         start_date: startDate,
@@ -284,7 +284,7 @@ const PlanController = () => {
         cancel_at_period_end: 0,
       });
 
-      const withPlan = await BrandSubscription.findByPk(scheduled.id, {
+      const withPlan = await BrandSubscriptionModel.findByPk(scheduled.id, {
         include: subscriptionInclude,
       });
       return res.status(201).json({
@@ -308,7 +308,7 @@ const PlanController = () => {
     try {
       const userId = req.user.id;
 
-      const subscription = await BrandSubscription.findOne({
+      const subscription = await BrandSubscriptionModel.findOne({
         where: { brand_id: userId, is_current: 1, status_id: SUB_ACTIVE },
       });
       if (!subscription) {
@@ -319,7 +319,7 @@ const PlanController = () => {
       }
 
       await subscription.update({ cancel_at_period_end: 1 });
-      const updated = await BrandSubscription.findByPk(subscription.id, {
+      const updated = await BrandSubscriptionModel.findByPk(subscription.id, {
         include: subscriptionInclude,
       });
       return res.status(200).json({
@@ -343,7 +343,7 @@ const PlanController = () => {
   const getMySubscriptionHistory = async (req, res) => {
     try {
       const userId = req.user.id;
-      const subscriptions = await BrandSubscription.findAll({
+      const subscriptions = await BrandSubscriptionModel.findAll({
         where: { brand_id: userId },
         order: [["createdAt", "DESC"]],
         include: subscriptionInclude,
@@ -367,9 +367,9 @@ const PlanController = () => {
     try {
       const userId = req.user.id;
 
-      const subscription = await BrandSubscription.findOne({
+      const subscription = await BrandSubscriptionModel.findOne({
         where: { brand_id: userId, is_current: 1, status_id: SUB_ACTIVE },
-        include: [{ model: Plan }],
+        include: [{ model: PlanModel }],
       });
       if (!subscription) {
         return res.status(404).json({
@@ -390,7 +390,7 @@ const PlanController = () => {
       endDate.setDate(endDate.getDate() + durationDays);
 
       await subscription.update({ end_date: endDate });
-      const updated = await BrandSubscription.findByPk(subscription.id, {
+      const updated = await BrandSubscriptionModel.findByPk(subscription.id, {
         include: subscriptionInclude,
       });
       return res.status(200).json({
@@ -419,7 +419,7 @@ const PlanController = () => {
           message: "id is required (query).",
         });
       }
-      const subscription = await BrandSubscription.findOne({
+      const subscription = await BrandSubscriptionModel.findOne({
         where: { id, brand_id: userId },
         include: subscriptionInclude,
       });

@@ -1,4 +1,4 @@
-const { Campaign, CampaignStatus } = require("../models");
+const { CampaignModel, CampaignStatusModel } = require("../models");
 
 const CampaignController = () => {
   /**
@@ -9,8 +9,8 @@ const CampaignController = () => {
    */
   const getCampaigns = async (req, res) => {
     try {
-      const campaigns = await Campaign.findAll({
-        include: [{ model: CampaignStatus, attributes: ["id", "status_name"] }],
+      const campaigns = await CampaignModel.findAll({
+        include: [{ model: CampaignStatusModel, attributes: ["id", "status_name"] }],
       });
       return res.status(200).json({
         success: true,

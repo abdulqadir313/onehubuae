@@ -1,100 +1,100 @@
 const bcrypt = require("bcrypt");
 const {
-  UserType,
-  UserStatus,
-  User,
-  UserStatusLog,
-  BrandProfile,
-  InfluencerProfile,
-  Wishlist,
-  WishlistItem,
-  Notification,
-  Platform,
-  SocialAccount,
+  UserTypeModel,
+  UserStatusModel,
+  UserModel,
+  UserStatusLogModel,
+  BrandProfileModel,
+  InfluencerProfileModel,
+  WishlistModel,
+  WishlistItemModel,
+  NotificationModel,
+  PlatformModel,
+  SocialAccountModel,
   CategoriesModel,
-  InfluencerCategory,
-  Plan,
-  SubscriptionStatus,
-  BrandSubscription,
-  CampaignStatus,
-  Campaign,
-  ProposalStatus,
-  CampaignProposal,
-  OrderStatus,
-  Order,
-  OrderStatusLog,
-  PaymentStatus,
-  Payment,
+  InfluencerCategoryModel,
+  PlanModel,
+  SubscriptionStatusModel,
+  BrandSubscriptionModel,
+  CampaignStatusModel,
+  CampaignModel,
+  ProposalStatusModel,
+  CampaignProposalModel,
+  OrderStatusModel,
+  OrderModel,
+  OrderStatusLogModel,
+  PaymentStatusModel,
+  PaymentModel,
 } = require("../models");
 const preData = require("../config/preData.json");
 
 const SALT_ROUNDS = 10;
 
 const initiatePreData = async () => {
-  await UserType.sync();
-  await UserStatus.sync();
-  await User.sync();
-  await UserStatusLog.sync();
-  await BrandProfile.sync();
-  await InfluencerProfile.sync();
-  await Wishlist.sync();
-  await WishlistItem.sync();
-  await Notification.sync();
-  await Platform.sync();
-  await SocialAccount.sync();
+  await UserTypeModel.sync();
+  await UserStatusModel.sync();
+  await UserModel.sync();
+  await UserStatusLogModel.sync();
+  await BrandProfileModel.sync();
+  await InfluencerProfileModel.sync();
+  await WishlistModel.sync();
+  await WishlistItemModel.sync();
+  await NotificationModel.sync();
+  await PlatformModel.sync();
+  await SocialAccountModel.sync();
   await CategoriesModel.sync();
-  await InfluencerCategory.sync();
-  await Plan.sync();
-  await SubscriptionStatus.sync();
-  await BrandSubscription.sync();
-  await CampaignStatus.sync();
-  await Campaign.sync();
-  await ProposalStatus.sync();
-  await CampaignProposal.sync();
-  await OrderStatus.sync();
-  await Order.sync();
-  await OrderStatusLog.sync();
-  await PaymentStatus.sync();
-  await Payment.sync();
+  await InfluencerCategoryModel.sync();
+  await PlanModel.sync();
+  await SubscriptionStatusModel.sync();
+  await BrandSubscriptionModel.sync();
+  await CampaignStatusModel.sync();
+  await CampaignModel.sync();
+  await ProposalStatusModel.sync();
+  await CampaignProposalModel.sync();
+  await OrderStatusModel.sync();
+  await OrderModel.sync();
+  await OrderStatusLogModel.sync();
+  await PaymentStatusModel.sync();
+  await PaymentModel.sync();
 
-  let userTypes = await UserType.findAll();
+  let userTypes = await UserTypeModel.findAll();
   if (userTypes.length === 0) {
-    await UserType.bulkCreate(preData.user_types);
+    await UserTypeModel.bulkCreate(preData.user_types);
   }
 
-  let userStatus = await UserStatus.findAll();
+  let userStatus = await UserStatusModel.findAll();
   if (userStatus.length === 0) {
-    await UserStatus.bulkCreate(preData.user_status);
+    await UserStatusModel.bulkCreate(preData.user_status);
   }
 
-  let subscriptionStatus = await SubscriptionStatus.findAll();
+  let subscriptionStatus = await SubscriptionStatusModel.findAll();
   if (subscriptionStatus.length === 0) {
-    await SubscriptionStatus.bulkCreate(preData.subscription_status);
+    await SubscriptionStatusModel.bulkCreate(preData.subscription_status);
   }
 
-  let campaignStatus = await CampaignStatus.findAll();
+  let campaignStatus = await CampaignStatusModel.findAll();
   if (campaignStatus.length === 0) {
-    await CampaignStatus.bulkCreate(preData.campaign_status);
+    await CampaignStatusModel.bulkCreate(preData.campaign_status);
   }
 
-  let proposalStatus = await ProposalStatus.findAll();
+  let proposalStatus = await ProposalStatusModel.findAll();
   if (proposalStatus.length === 0) {
-    await ProposalStatus.bulkCreate(preData.proposal_status);
+    await ProposalStatusModel.bulkCreate(preData.proposal_status);
   }
 
-  let orderStatus = await OrderStatus.findAll();
+  let orderStatus = await OrderStatusModel.findAll();
   if (orderStatus.length === 0) {
-    await OrderStatus.bulkCreate(preData.order_status);
+    await OrderStatusModel.bulkCreate(preData.order_status);
   }
 
-  let paymentStatus = await PaymentStatus.findAll();
+  let paymentStatus = await PaymentStatusModel.findAll();
   if (paymentStatus.length === 0) {
-    await PaymentStatus.bulkCreate(preData.payment_status);
+    await PaymentStatusModel.bulkCreate(preData.payment_status);
   }
 
-  let platforms = await Platform.findAll();
+  let platforms = await PlatformModel.findAll();
   if (platforms.length === 0) {
-    await Platform.bulkCreate(preData.platforms);
+    await PlatformModel.bulkCreate(preData.platforms);
   }
 
   let categories = await CategoriesModel.findAll();
@@ -102,14 +102,14 @@ const initiatePreData = async () => {
     await CategoriesModel.bulkCreate(preData.categories);
   }
 
-  let plans = await Plan.findAll();
+  let plans = await PlanModel.findAll();
   if (plans.length === 0) {
-    await Plan.bulkCreate(preData.plans);
+    await PlanModel.bulkCreate(preData.plans);
   }
 
-  const users = await User.findAll();
+  const users = await UserModel.findAll();
   if (users.length === 0) {
-    await User.bulkCreate(preData.users);
+    await UserModel.bulkCreate(preData.users);
   }
 
   console.info("Pre-data: all tables seeded successfully.");

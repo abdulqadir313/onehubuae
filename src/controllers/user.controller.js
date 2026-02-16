@@ -1,10 +1,10 @@
 const bcrypt = require("bcrypt");
 const {
-  User,
-  BrandProfile,
-  InfluencerProfile,
-  UserType,
-  UserStatus,
+  UserModel,
+  BrandProfileModel,
+  InfluencerProfileModel,
+  UserTypeModel,
+  UserStatusModel,
 } = require("../models");
 const database = require("../config/db");
 const { createToken } = require("../config/jwtVerify");
@@ -45,7 +45,7 @@ const UserController = () => {
       }
 
 
-      const existing = await User.findOne({ where: { email } });
+      const existing = await UserModel.findOne({ where: { email } });
       if (existing) {
         return res.status(400).json({
           success: false,
@@ -56,7 +56,7 @@ const UserController = () => {
       const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
       const t = await database.transaction();
       try {
-        const user = await User.create(
+        const user = await UserModel.create(
           {
             name,
             email,
@@ -74,7 +74,7 @@ const UserController = () => {
         );
 
         if (user_type_id === 2) {
-          await BrandProfile.create(
+          await BrandProfileModel.create(
             {
               user_id: user.id,
               company_name: company_name || null,
@@ -84,7 +84,7 @@ const UserController = () => {
             { transaction: t }
           );
         } else {
-          await InfluencerProfile.create(
+          await InfluencerProfileModel.create(
             {
               user_id: user.id,
               display_name: display_name || null,
@@ -131,13 +131,13 @@ const UserController = () => {
         });
       }
 
-      const user = await User.findOne({
+      const user = await UserModel.findOne({
         where: { email, is_active: 1 },
         include: [
-          { model: UserType, attributes: ["id", "type_name"] },
-          { model: UserStatus, attributes: ["id", "status_name"] },
-          { model: BrandProfile, required: false },
-          { model: InfluencerProfile, required: false },
+          { model: UserTypeModel, attributes: ["id", "type_name"] },
+          { model: UserStatusModel, attributes: ["id", "status_name"] },
+          { model: BrandProfileModel, required: false },
+          { model: InfluencerProfileModel, required: false },
         ],
       });
 
@@ -194,13 +194,13 @@ const UserController = () => {
   const getMyProfile = async (req, res) => {
     try {
       const userId = req.user.id;
-      const user = await User.findByPk(userId, {
+      const user = await UserModel.findByPk(userId, {
         attributes: { exclude: ["password"] },
         include: [
-          { model: UserType, attributes: ["id", "type_name"] },
-          { model: UserStatus, attributes: ["id", "status_name"] },
-          { model: BrandProfile, required: false },
-          { model: InfluencerProfile, required: false },
+          { model: UserTypeModel, attributes: ["id", "type_name"] },
+          { model: UserStatusModel, attributes: ["id", "status_name"] },
+          { model: BrandProfileModel, required: false },
+          { model: InfluencerProfileModel, required: false },
         ],
       });
 
@@ -234,7 +234,7 @@ const UserController = () => {
       const userId = req.user.id;
       const { name, phone, country, city, bio } = req.body;
 
-      const user = await User.findByPk(userId);
+      const user = await UserModel.findByPk(userId);
       if (!user) {
         return res.status(404).json({
           success: false,
@@ -273,7 +273,7 @@ const UserController = () => {
   const updateProfilePicture = async (req, res) => {
     try {
       const userId = req.user.id;
-      const user = await User.findByPk(userId);
+      const user = await UserModel.findByPk(userId);
       if (!user) {
         return res.status(404).json({
           success: false,
@@ -325,7 +325,7 @@ const UserController = () => {
         });
       }
 
-      const user = await User.findByPk(userId);
+      const user = await UserModel.findByPk(userId);
       if (!user) {
         return res.status(404).json({
           success: false,
@@ -364,7 +364,7 @@ const UserController = () => {
   const deleteAccount = async (req, res) => {
     try {
       const userId = req.user.id;
-      const user = await User.findByPk(userId);
+      const user = await UserModel.findByPk(userId);
       if (!user) {
         return res.status(404).json({
           success: false,

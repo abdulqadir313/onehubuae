@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_USER_STATUS } = require("../config/table_names");
 
-const UserStatus = database.define(
+const UserStatusModel = database.define(
   TABLE_NAME_USER_STATUS,
   {
     id: {
@@ -26,4 +26,4 @@ const UserStatus = database.define(
   }
 );
 
-module.exports = UserStatus;
+module.exports = UserStatusModel;

@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_USERS } = require("../config/table_names");
 
-const User = database.define(
+const UserModel = database.define(
   TABLE_NAME_USERS,
   {
     id: {
@@ -80,4 +80,4 @@ const User = database.define(
   }
 );
 
-module.exports = User;
+module.exports = UserModel;

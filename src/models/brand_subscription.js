@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_BRAND_SUBSCRIPTIONS } = require("../config/table_names");
 
-const BrandSubscription = database.define(
+const BrandSubscriptionModel = database.define(
   TABLE_NAME_BRAND_SUBSCRIPTIONS,
   {
     id: {
@@ -75,4 +75,4 @@ const BrandSubscription = database.define(
   }
 );
 
-module.exports = BrandSubscription;
+module.exports = BrandSubscriptionModel;

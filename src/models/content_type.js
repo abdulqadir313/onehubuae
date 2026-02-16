@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_CONTENT_TYPES } = require("../config/table_names");
 
-const ContentType = database.define(
+const ContentTypeModel = database.define(
   TABLE_NAME_CONTENT_TYPES,
   {
     id: {
@@ -21,4 +21,4 @@ const ContentType = database.define(
   },
 );
 
-module.exports = ContentType;
+module.exports = ContentTypeModel;

@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_PROPOSAL_STATUS } = require("../config/table_names");
 
-const ProposalStatus = database.define(
+const ProposalStatusModel = database.define(
   TABLE_NAME_PROPOSAL_STATUS,
   {
     id: {
@@ -21,4 +21,4 @@ const ProposalStatus = database.define(
   }
 );
 
-module.exports = ProposalStatus;
+module.exports = ProposalStatusModel;

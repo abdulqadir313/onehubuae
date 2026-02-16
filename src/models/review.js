@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_REVIEWS } = require("../config/table_names");
 
-const Review = database.define(
+const ReviewModel = database.define(
   TABLE_NAME_REVIEWS,
   {
     review_id: {
@@ -43,4 +43,4 @@ const Review = database.define(
   }
 );
 
-module.exports = Review;
+module.exports = ReviewModel;

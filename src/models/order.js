@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_ORDERS } = require("../config/table_names");
 
-const Order = database.define(
+const OrderModel = database.define(
   TABLE_NAME_ORDERS,
   {
     id: {
@@ -57,4 +57,4 @@ const Order = database.define(
   }
 );
 
-module.exports = Order;
+module.exports = OrderModel;

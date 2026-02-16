@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_SOCIAL_PROFILES } = require("../config/table_names");
 
-const SocialProfile = database.define(
+const SocialProfileModel = database.define(
   TABLE_NAME_SOCIAL_PROFILES,
   {
     id: {
@@ -50,4 +50,4 @@ const SocialProfile = database.define(
   }
 );
 
-module.exports = SocialProfile;
+module.exports = SocialProfileModel;

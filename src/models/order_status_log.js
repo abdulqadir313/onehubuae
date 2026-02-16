@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_ORDER_STATUS_LOGS } = require("../config/table_names");
 
-const OrderStatusLog = database.define(
+const OrderStatusLogModel = database.define(
   TABLE_NAME_ORDER_STATUS_LOGS,
   {
     id: {
@@ -33,4 +33,4 @@ const OrderStatusLog = database.define(
   }
 );
 
-module.exports = OrderStatusLog;
+module.exports = OrderStatusLogModel;

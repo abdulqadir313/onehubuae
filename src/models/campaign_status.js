@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_CAMPAIGN_STATUS } = require("../config/table_names");
 
-const CampaignStatus = database.define(
+const CampaignStatusModel = database.define(
   TABLE_NAME_CAMPAIGN_STATUS,
   {
     id: {
@@ -21,4 +21,4 @@ const CampaignStatus = database.define(
   }
 );
 
-module.exports = CampaignStatus;
+module.exports = CampaignStatusModel;

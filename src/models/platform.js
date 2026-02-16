@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_PLATFORMS } = require("../config/table_names");
 
-const Platform = database.define(
+const PlatformModel = database.define(
   TABLE_NAME_PLATFORMS,
   {
     id: {
@@ -30,4 +30,4 @@ const Platform = database.define(
   }
 );
 
-module.exports = Platform;
+module.exports = PlatformModel;

@@ -1,11 +1,11 @@
 const { Op } = require("sequelize");
 const {
-  User,
-  InfluencerProfile,
-  UserType,
-  UserStatus,
-  SocialAccount,
-  Platform,
+  UserModel,
+  InfluencerProfileModel,
+  UserTypeModel,
+  UserStatusModel,
+  SocialAccountModel,
+  PlatformModel,
   CategoriesModel,
 } = require("../models");
 const { uploadImage } = require("../handlers/uploadImage");
@@ -21,16 +21,16 @@ const InfluencerController = () => {
   const getInfluencerProfile = async (req, res) => {
     try {
       const userId = req.user.id;
-      const user = await User.findByPk(userId, {
+      const user = await UserModel.findByPk(userId, {
         attributes: { exclude: ["password"] },
         include: [
-          { model: UserType, attributes: ["id", "type_name"] },
-          { model: UserStatus, attributes: ["id", "status_name"] },
-          { model: InfluencerProfile, required: true },
+          { model: UserTypeModel, attributes: ["id", "type_name"] },
+          { model: UserStatusModel, attributes: ["id", "status_name"] },
+          { model: InfluencerProfileModel, required: true },
           {
-            model: SocialAccount,
+            model: SocialAccountModel,
             required: false,
-            include: [{ model: Platform, attributes: ["id", "name", "icon"] }],
+            include: [{ model: PlatformModel, attributes: ["id", "name", "icon"] }],
           },
           {
             model: CategoriesModel,
@@ -69,7 +69,7 @@ const InfluencerController = () => {
   const updateInfluencerProfile = async (req, res) => {
     try {
       const userId = req.user.id;
-      const user = await User.findByPk(userId);
+      const user = await UserModel.findByPk(userId);
       if (!user) {
         return res.status(404).json({
           success: false,
@@ -87,7 +87,7 @@ const InfluencerController = () => {
       }
 
       const { display_name, price_start, bio } = req.body;
-      const profile = await InfluencerProfile.findOne({
+      const profile = await InfluencerProfileModel.findOne({
         where: { user_id: userId },
       });
 
@@ -139,9 +139,9 @@ const InfluencerController = () => {
       const category_ids = Array.isArray(category_id) ? category_id : [];
 
       const includes = [
-        { model: InfluencerProfile, required: true },
+        { model: InfluencerProfileModel, required: true },
         {
-          model: SocialAccount,
+          model: SocialAccountModel,
           where: { platform_id },
           required: true,
         },
@@ -156,11 +156,11 @@ const InfluencerController = () => {
         });
       }
 
-      const users = await User.findAll({
+      const users = await UserModel.findAll({
         attributes: { exclude: ["password"] },
         include: [
-          { model: UserType, attributes: ["id", "type_name"] },
-          { model: UserStatus, attributes: ["id", "status_name"] },
+          { model: UserTypeModel, attributes: ["id", "type_name"] },
+          { model: UserStatusModel, attributes: ["id", "status_name"] },
           ...includes,
         ],
       });
@@ -194,7 +194,7 @@ const InfluencerController = () => {
         });
       }
 
-      const user = await User.findByPk(userId);
+      const user = await UserModel.findByPk(userId);
       if (!user) {
         return res.status(404).json({
           success: false,
@@ -202,7 +202,7 @@ const InfluencerController = () => {
         });
       }
 
-      await SocialAccount.destroy({ where: { user_id: userId } });
+      await SocialAccountModel.destroy({ where: { user_id: userId } });
 
       const toCreate = platforms
         .filter((p) => p && p.platform_id != null)
@@ -216,12 +216,12 @@ const InfluencerController = () => {
         }));
 
       if (toCreate.length > 0) {
-        await SocialAccount.bulkCreate(toCreate);
+        await SocialAccountModel.bulkCreate(toCreate);
       }
 
-      const accounts = await SocialAccount.findAll({
+      const accounts = await SocialAccountModel.findAll({
         where: { user_id: userId },
-        include: [{ model: Platform, attributes: ["id", "name", "icon"] }],
+        include: [{ model: PlatformModel, attributes: ["id", "name", "icon"] }],
       });
 
       return res.status(200).json({
@@ -254,7 +254,7 @@ const InfluencerController = () => {
         });
       }
 
-      const user = await User.findByPk(userId);
+      const user = await UserModel.findByPk(userId);
       if (!user) {
         return res.status(404).json({
           success: false,
@@ -262,7 +262,7 @@ const InfluencerController = () => {
         });
       }
 
-      await user.setCategories(category_ids);
+      await user.setCategoriesModels(category_ids);
 
       const categories = await user.getCategories({
         attributes: ["id", "name", "slug", "image"],

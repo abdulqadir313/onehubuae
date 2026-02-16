@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const database = require("../config/db");
 const { TABLE_NAME_SOCIAL_ACCOUNTS } = require("../config/table_names");
 
-const SocialAccount = database.define(
+const SocialAccountModel = database.define(
   TABLE_NAME_SOCIAL_ACCOUNTS,
   {
     id: {
@@ -42,4 +42,4 @@ const SocialAccount = database.define(
   }
 );
 
-module.exports = SocialAccount;
+module.exports = SocialAccountModel;

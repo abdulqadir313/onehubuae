@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const { UserModel } = require("../models");
 const { USER_TYPES } = require("../utils/constants");
 
 const getJwtSecret = () => {
@@ -31,7 +31,7 @@ const protect = async (req, res, next) => {
 
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, getJwtSecret());
-    const user = await User.findOne({
+    const user = await UserModel.findOne({
       where: { id: decoded.id, is_active: 1 },
       attributes: ["id", "user_type_id"],
     });
