@@ -133,13 +133,72 @@ const CategoriesController = () => {
   }
 
 
-  const deleteCategory = async()=>{
+  const deleteCategory = async (req, res) => {
+    try {
+      const { id } = req.body
 
-  }
+      const category = await CategoriesModel.findByPk(id);
+
+      if (!category) {
+        return res.status(404).json({
+          success: false,
+          message: "Category Not Found"
+        });
+      }
+
+      await category.destroy();
+      return res.status(200).json({
+        success: true,
+        message: "Category Id Deleted Successfully"
+      });
+
+    }
+    catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  };
+
+
+  const getCategoryById = async (req, res) => {
+    try {
+      const { id } = req.query;
+
+      const category = await CategoriesModel.findOne({
+        attributes: ["id", "name", "slug", "image"],
+        where: {
+          id,
+          is_active: 1,
+        }
+      });
+
+      if (!category) {
+        return res.status(404).json({
+          success: false,
+          message: "Category not found"
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        data: category,
+      })
+    }
+    catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  };
+
+
 
 
   return {
-    getAllCategories, addCategory, updateCategory, deleteCategory
+    getAllCategories, addCategory, updateCategory, deleteCategory, getCategoryById
   };
 };
 
