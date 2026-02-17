@@ -11,6 +11,8 @@ const orderRoutes = require("../routes/order.routes");
 const wishlistRoutes = require("../routes/wishlist.routes");
 const notificationRoutes = require("../routes/notification.routes");
 const planRoutes = require("../routes/plan.routes");
+const platformRoutes = require("../routes/platform.routes");
+
 
 exports.set_routes = (app) => {
   app.use("/api/users", userRoutes);
@@ -22,4 +24,5 @@ exports.set_routes = (app) => {
   app.use("/api/wishlists", wishlistRoutes);
   app.use("/api/notifications", notificationRoutes);
   app.use("/api/plans", planRoutes);
+   app.use("/api/platform", platformRoutes);
 };
