@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const {
   UserModel,
   InfluencerProfileModel,
@@ -9,6 +9,7 @@ const {
   CategoriesModel,
 } = require("../models");
 const { uploadImage } = require("../handlers/uploadImage");
+const { errorMonitor } = require("nodemailer/lib/xoauth2");
 
 
 const InfluencerController = () => {
@@ -281,12 +282,229 @@ const InfluencerController = () => {
     }
   };
 
+
+
+  const getAllSocialAccounts = async (req, res) => {
+    try {
+      const accounts = await SocialAccountModel.findAll({
+        attributes: [
+          "user_id",
+          "platform_id",
+          "username",
+          "profile_url",
+          "followers",
+          "engagement_rate",
+        ],
+      });
+
+      return res.status(200).json({
+        success: true,
+        data: accounts,
+      });
+
+    }
+    catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Something went wrong",
+      });
+    }
+  };
+
+
+  const addSocialAccount = async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const { platform_id, username, profile_url, followers, engagement_rate } = req.body;
+
+      if (!userId || !platform_id || !username) {
+        return res.status(400).json({
+          success: false,
+          message: " user_id platform_id is required",
+        })
+      }
+
+      const existingSocialAccount = await SocialAccountModel.findOne({
+        where: {
+          user_id: userId,
+          platform_id: platform_id
+        },
+      });
+
+      console.log(existingSocialAccount)
+
+      if (existingSocialAccount) {
+        return res.status(400).json({
+          success: false,
+          message: "Social Account Already Exists",
+        });
+      }
+
+      await SocialAccountModel.create({
+        user_id: userId,
+        platform_id,
+        username,
+        profile_url,
+        followers,
+        engagement_rate,
+
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: "Social Account created successfully",
+      });
+    }
+
+    catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+
+
+
+  const updateSocialAccount = async (req, res) => {
+    try {
+
+      const { id, user_id, platform_id, username, profile_url, followers, engagement_rate } = req.body;
+
+      if (!id) {
+        return res.status(400).json({
+          success: false,
+          message: " id is required"
+        });
+      }
+
+      const socialAccount = await SocialAccountModel.findByPk(id)
+      if (!socialAccount) {
+        return res.status(400).json({
+          success: false,
+          message: "social account not found"
+        });
+      }
+
+      if (username || platform_id) {
+        const existingSocialAccount = await SocialAccountModel.findOne({
+          where: {
+            username: username ?? socialAccount.username,
+            platform_id: platform_id ?? socialAccount.platform_id
+          }
+        });
+
+        if (existingSocialAccount && existingSocialAccount.id !== id) {
+          return res.status(400).json({
+            success: false,
+            message: "this user already exits on platform"
+          })
+        }
+      }
+      await socialAccount.update({
+
+        user_id: user_id ?? socialAccount.user_id,
+        platform_id: platform_id ?? socialAccount.platform_id,
+        username: username ?? socialAccount.username,
+        profile_url: profile_url ?? socialAccount.profile_url,
+        followers: followers ?? socialAccount.followers,
+        engagement_rate: engagement_rate ?? socialAccount.engagement_rate
+      });
+      return res.status(200).json({
+        success: true,
+        message: "Social Account Updated Successfully",
+        data: socialAccount
+      })
+    }
+    catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message
+      })
+    }
+  }
+
+  const deleteSocialAccount = async (req, res) => {
+    try {
+      const { id } = req.body;
+
+      if (!id) {
+        return res.status(400).json({
+          success: false,
+          message: "Social Account id is Required"
+        });
+      }
+      const socialAccount = await SocialAccountModel.findByPk(id);
+
+      if (!socialAccount) {
+        return res.status(400).json({
+          success: false,
+          message: "Social Account not Found"
+        });
+      }
+
+      await socialAccount.destroy();
+
+      return res.status(200).json({
+        success: true,
+        message: " Social Account Deleted Successfully"
+      });
+
+    }
+    catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+
+
+const getSocialAccountById = async(req,res)=>{
+  try{
+    const { id } = req.body;
+console.log(id);
+            if (!id) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Account id is required",
+                });
+            }
+
+            const socialAccount = await SocialAccountModel.findByPk(id);
+
+            if (!socialAccount) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Social Account not found",
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                data: socialAccount,
+            });
+        }
+  catch(error){ 
+    return res.status(500).json({
+                success: false,
+                message: error.message,
+            });
+      
+    }
+}
+
   return {
     getInfluencerProfile,
     updateInfluencerProfile,
     getInfluencersByPlatformId,
     updateInfluencersPlatform,
     updateInfluencerCategories,
+    getAllSocialAccounts,
+    addSocialAccount,
+    updateSocialAccount,
+    deleteSocialAccount,
+    getSocialAccountById,
   };
 };
 

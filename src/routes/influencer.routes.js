@@ -11,6 +11,11 @@ const {
   getInfluencersByPlatformId,
   updateInfluencersPlatform,
   updateInfluencerCategories,
+  getAllSocialAccounts,
+  addSocialAccount,
+  updateSocialAccount,
+  deleteSocialAccount,
+  getSocialAccountById,
 } = InfluencerController();
 
 router.use(jwtController.protect);
@@ -20,5 +25,12 @@ router.put("/update-profile", uploadImage.single("image"), updateInfluencerProfi
 router.post("/influencers-by-platform", getInfluencersByPlatformId);
 router.put("/update-platforms", updateInfluencersPlatform);
 router.put("/update-categories", updateInfluencerCategories);
+router.get("/get-all-social-accounts", getAllSocialAccounts);
+router.post("/add-social-account", addSocialAccount);
+router.put("/update-social-account", updateSocialAccount);
+router.delete("/delete-social-account", deleteSocialAccount);
+router.get("/get-social-account-by-id", getSocialAccountById);
+
+
 
 module.exports = router;
