@@ -9,9 +9,8 @@ const {
 } = PlatformController();
 
 
-
-router.use(jwtController.protect);
 router.get("/get-all-platforms", getAllPlatforms);
+router.use(jwtController.protect);
 router.post("/add-platform", addPlatform)
 router.put("/update-platform", updatePlatform)
 router.delete("/delete-platform", deletePlatform)

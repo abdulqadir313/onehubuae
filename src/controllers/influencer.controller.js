@@ -447,7 +447,7 @@ const InfluencerController = () => {
 
       return res.status(200).json({
         success: true,
-        message: " Social Account Deleted Successfully"
+        message: "Social Account Deleted Successfully"
       });
 
     }
