@@ -17,19 +17,18 @@ const {
   deleteSocialAccount,
   getSocialAccountById,
 } = InfluencerController();
-
+router.post("/influencers-by-platform", getInfluencersByPlatformId);
+router.get("/get-social-account-by-id", getSocialAccountById);
+router.get("/get-all-social-accounts", getAllSocialAccounts);
 router.use(jwtController.protect);
 router.use(jwtController.allowRoles(USER_TYPES.INFLUENCER));
 router.get("/get-profile", getInfluencerProfile);
 router.put("/update-profile", uploadImage.single("image"), updateInfluencerProfile);
-router.post("/influencers-by-platform", getInfluencersByPlatformId);
 router.put("/update-platforms", updateInfluencersPlatform);
 router.put("/update-categories", updateInfluencerCategories);
-router.get("/get-all-social-accounts", getAllSocialAccounts);
 router.post("/add-social-account", addSocialAccount);
 router.put("/update-social-account", updateSocialAccount);
 router.delete("/delete-social-account", deleteSocialAccount);
-router.get("/get-social-account-by-id", getSocialAccountById);
 
 
 
