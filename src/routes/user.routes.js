@@ -18,7 +18,6 @@ const {
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
-
 router.use(jwtController.protect);  
 router.get("/get-profile", getMyProfile);
 router.put("/update-profile", updateMyProfile);
