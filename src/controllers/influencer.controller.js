@@ -263,7 +263,7 @@ const InfluencerController = () => {
         });
       }
 
-      await user.setCategoriesModels(category_ids);
+      await user.setCategories(category_ids);
 
       const categories = await user.getCategories({
         attributes: ["id", "name", "slug", "image"],
@@ -311,60 +311,71 @@ const InfluencerController = () => {
     }
   };
 
-
   const addSocialAccount = async (req, res) => {
-    try {
-      const userId = req.user.id;
-      const { platform_id, username, profile_url, followers, engagement_rate } = req.body;
+  try {
+    const userId = req.user.id;
+    const { accounts } = req.body;
 
-      if (!userId || !platform_id || !username) {
-        return res.status(400).json({
-          success: false,
-          message: " user_id platform_id is required",
-        })
-      }
-
-      const existingSocialAccount = await SocialAccountModel.findOne({
-        where: {
-          user_id: userId,
-          platform_id: platform_id
-        },
+    if (!userId || !Array.isArray(accounts) || accounts.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "accounts array is required",
       });
+    }
 
-      console.log(existingSocialAccount)
-
-      if (existingSocialAccount) {
+    for (const acc of accounts) {
+      if (!acc.platform_id || !acc.username) {
         return res.status(400).json({
           success: false,
-          message: "Social Account Already Exists",
+          message: "platform_id and username are required for all accounts",
         });
       }
+    }
 
-      await SocialAccountModel.create({
+    const existingAccounts = await SocialAccountModel.findAll({
+      where: {
         user_id: userId,
-        platform_id,
-        username,
-        profile_url,
-        followers,
-        engagement_rate,
+      },
+    });
 
-      });
+    const existingPlatformIds = existingAccounts.map(
+      (item) => item.platform_id
+    );
 
-      return res.status(200).json({
-        success: true,
-        message: "Social Account created successfully",
-      });
-    }
+    const newAccounts = accounts.filter(
+      (acc) => !existingPlatformIds.includes(acc.platform_id)
+    );
 
-    catch (error) {
-      return res.status(500).json({
+    if (newAccounts.length === 0) {
+      return res.status(400).json({
         success: false,
-        message: error.message,
+        message: "All social accounts already exist",
       });
     }
+
+    const dataToInsert = newAccounts.map((acc) => ({
+      user_id: userId,
+      platform_id: acc.platform_id,
+      username: acc.username,
+      profile_url: acc.profile_url || null,
+      followers: acc.followers || 0,
+      engagement_rate: acc.engagement_rate || 0,
+    }));
+
+    await SocialAccountModel.bulkCreate(dataToInsert);
+
+    return res.status(200).json({
+      success: true,
+      message: "Social accounts added successfully",
+      data: dataToInsert,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
-
-
+};
 
   const updateSocialAccount = async (req, res) => {
     try {
