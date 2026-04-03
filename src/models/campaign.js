@@ -38,6 +38,10 @@ const CampaignModel = database.define(
       type: DataTypes.DATEONLY,
       allowNull: true,
     },
+    number_of_influencers: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+    },
     status_id: {
       type: DataTypes.INTEGER,
       allowNull: true,

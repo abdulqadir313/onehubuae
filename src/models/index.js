@@ -18,6 +18,7 @@ const SubscriptionStatusModel = require("./subscription_status");
 const BrandSubscriptionModel = require("./brand_subscription");
 const CampaignStatusModel = require("./campaign_status");
 const CampaignModel = require("./campaign");
+const CampaignCategoryModel = require("./campaign_category");
 const ProposalStatusModel = require("./proposal_status");
 const CampaignProposalModel = require("./campaign_proposal");
 const OrderStatusModel = require("./order_status");
@@ -85,9 +86,12 @@ UserModel.hasMany(BrandSubscriptionModel, { foreignKey: "brand_id" });
 
 // Campaign module
 CampaignStatusModel.hasMany(CampaignModel, { foreignKey: "status_id" });
+CampaignCategoryModel.hasMany(CampaignModel, { foreignKey: "category_id" })
 CampaignModel.belongsTo(UserModel, { foreignKey: "brand_id" });
 CampaignModel.belongsTo(CampaignStatusModel, { foreignKey: "status_id" });
 UserModel.hasMany(CampaignModel, { foreignKey: "brand_id" });
+CampaignModel.hasMany(CampaignCategoryModel, {foreignKey: "campaign_id",as: "campaign_categories", });
+CampaignCategoryModel.belongsTo(CategoriesModel, {foreignKey: "category_id",as: "category", });
 
 // Proposal module
 ProposalStatusModel.hasMany(CampaignProposalModel, { foreignKey: "status_id" });
@@ -154,4 +158,5 @@ module.exports = {
   OrderStatusLogModel,
   PaymentStatusModel,
   PaymentModel,
+  CampaignCategoryModel,
 };

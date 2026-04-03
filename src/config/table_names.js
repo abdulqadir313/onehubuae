@@ -24,6 +24,7 @@ const tableNames = {
   TABLE_NAME_ORDER_STATUS_LOGS: "order_status_logs",
   TABLE_NAME_PAYMENT_STATUS: "payment_status",
   TABLE_NAME_PAYMENTS: "payments",
+  TABLE_NAME_CAMPAIGN_CATEGORIES: "campaign_categories",
 };
 
 module.exports = tableNames;
