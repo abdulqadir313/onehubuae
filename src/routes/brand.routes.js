@@ -5,13 +5,15 @@ const jwtController = require("../config/jwtVerify");
 const { USER_TYPES } = require("../utils/constants");
 const { uploadImage } = require("../handlers/uploadImage");
 
-const { getBrandProfile, updateBrandProfile, updateBrandCoverImage } =
+const { getBrandProfile, updateBrandProfile, updateBrandProfileImages, updateBrandSocialProfile, updateBrandAccountDetails } =
   BrandController();
 
 router.use(jwtController.protect);
 router.use(jwtController.allowRoles(USER_TYPES.BRAND));
 router.get("/get-profile", getBrandProfile);
 router.put("/update-profile", updateBrandProfile);
-router.put("/update-cover-image", uploadImage.single("cover_image"), updateBrandCoverImage);
+router.put("/update-social-profile", updateBrandSocialProfile);
+router.put("/update-account-details", updateBrandAccountDetails);
+router.put("/update-profile-images", uploadImage.fields([{ name: "cover_image", maxCount: 1 },{ name: "profile_pic", maxCount: 1 },]),updateBrandProfileImages);
 
 module.exports = router;
