@@ -35,6 +35,10 @@ const SocialAccountModel = database.define(
       type: DataTypes.DECIMAL(5, 2),
       allowNull: true,
     },
+    total_reach: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
   },
   {
     tableName: TABLE_NAME_SOCIAL_ACCOUNTS,

@@ -2,6 +2,9 @@ const { Op, where } = require("sequelize");
 const {
   UserModel,
   InfluencerProfileModel,
+  InfluencerAudienceGenderModel,
+  InfluencerAudienceLocationsModel,
+  InfluencerAudienceAgeModel,
   UserTypeModel,
   UserStatusModel,
   SocialAccountModel,
@@ -67,7 +70,200 @@ const InfluencerController = () => {
    * @param res
    * @returns Success message or updated profile picture URL
    */
-  const updateInfluencerProfile = async (req, res) => {
+
+  const updateInfluencerAudienceGender = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await UserModel.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+    const { male = 0, female = 0, other = 0 } = req.body;
+    const total = Number(male) + Number(female) + Number(other);
+    if (total !== 100) {
+      return res.status(400).json({
+        success: false,
+        message: "Total percentage must be exactly 100.",
+      });
+    }
+    let genderData = await InfluencerAudienceGenderModel.findOne({
+      where: { influencer_id: userId },
+    });
+    if (genderData) {
+      await genderData.update({
+        male,
+        female,
+        other,
+      });
+    } 
+    else {
+      genderData = await InfluencerAudienceGenderModel.create({
+        influencer_id: userId,
+        male,
+        female,
+        other,
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Influencer audience gender updated successfully.",
+      data: genderData,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const updateInfluencerAudienceAge = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { audience_age } = req.body;
+
+    if (!Array.isArray(audience_age) || audience_age.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Audience age must be a non-empty array.",
+      });
+    }
+    const user = await UserModel.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    const allowedAges = ["13-17", "18-24", "25-34", "35-44", "45-64"];
+
+    for (const item of audience_age) {
+      if (!item.age_range || !allowedAges.includes(item.age_range)) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid age_range: ${item.age_range}`,
+        });
+      }
+
+      if (
+        item.percentage == null ||
+        isNaN(item.percentage) ||
+        item.percentage < 0
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid percentage for ${item.age_range}`,
+        });
+      }
+    }
+    const total = audience_age.reduce(
+      (sum, item) => sum + Number(item.percentage),
+      0
+    );
+
+    if (total !== 100) {
+      return res.status(400).json({
+        success: false,
+        message: "Total percentage must be exactly 100.",
+      });
+    }
+    await InfluencerAudienceAgeModel.destroy({
+      where: { influencer_id: userId },
+    });
+    const ageData = audience_age.map((item) => ({
+      influencer_id: userId,
+      age_range: item.age_range,
+      percentage: item.percentage,
+    }));
+    const insertedData = await InfluencerAudienceAgeModel.bulkCreate(ageData);
+
+    return res.status(200).json({
+      success: true,
+      message: "Influencer audience age updated successfully.",
+      AudienceAgeData: insertedData,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const updateInfluencerAudienceLocations = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { audience_locations } = req.body;
+    if (!Array.isArray(audience_locations) || audience_locations.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Audience locations must be a non-empty array.",
+      });
+    }
+
+    const user = await UserModel.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    for (const item of audience_locations) {
+      if (!item.country || typeof item.country !== "string") {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid country value.",
+        });
+      }
+
+      if (
+        item.percentage == null ||
+        isNaN(item.percentage) ||
+        item.percentage < 0
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid percentage for ${item.country}`,
+        });
+      }
+    }
+    const total = audience_locations.reduce((sum, item) => sum + Number(item.percentage),0);
+    if (total !== 100) {
+      return res.status(400).json({
+        success: false,
+        message: "Total percentage must be exactly 100.",
+      });
+    }
+    await InfluencerAudienceLocationsModel.destroy({where: { influencer_id: userId },});
+    const locationData = audience_locations.map((item) => ({
+      influencer_id: userId,
+      country: item.country,
+      percentage: item.percentage,
+    }));
+    const insertedData = await InfluencerAudienceLocationsModel.bulkCreate(locationData);
+
+    return res.status(200).json({
+      success: true,
+      message: "Audience locations updated successfully.",
+      AudienceLocationsData: insertedData,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const updateInfluencerProfile = async (req, res) => {
     try {
       const userId = req.user.id;
       const user = await UserModel.findByPk(userId);
@@ -87,7 +283,7 @@ const InfluencerController = () => {
         });
       }
 
-      const { display_name, price_start, bio } = req.body;
+      const { name, phone, bio, country, city, dob, gender, category_ids } = req.body;
       const profile = await InfluencerProfileModel.findOne({
         where: { user_id: userId },
       });
@@ -100,17 +296,31 @@ const InfluencerController = () => {
       }
 
       const userUpdates = {};
+      if (name != null) userUpdates.name = name;
+      if (phone != null) userUpdates.phone = phone;
+      if (country != null) userUpdates.country = country;
+      if (city != null) userUpdates.city = city;
+      if (dob != null) userUpdates.dob = dob;
+      if (gender != null) userUpdates.gender = gender;
       if (bio != null) userUpdates.bio = bio;
       await user.update(userUpdates);
 
-      const profileUpdates = {};
-      if (display_name != null) profileUpdates.display_name = display_name;
-      if (price_start != null) profileUpdates.price_start = price_start;
-      await profile.update(profileUpdates);
+      let categories = [];
+      if (Array.isArray(category_ids)) {
+        await user.setCategories(category_ids);
+
+        categories = await user.getCategories({
+          attributes: ["id", "name", "slug", "image"],
+        });
+      }
 
       return res.status(200).json({
         success: true,
         message: "Influencer profile updated.",
+        data: {
+        user,
+        categories,
+      },
       });
     } catch (error) {
       return res.status(500).json({
@@ -119,6 +329,7 @@ const InfluencerController = () => {
       });
     }
   };
+
 
   /**
    * @description Get influencers by platform (and optional category filter)
@@ -213,6 +424,7 @@ const InfluencerController = () => {
           username: p.username || null,
           profile_url: p.profile_url || null,
           followers: p.followers ?? null,
+          total_reach:p.total_reach ?? null,
           engagement_rate: p.engagement_rate ?? null,
         }));
 
@@ -474,7 +686,7 @@ const InfluencerController = () => {
 const getSocialAccountById = async(req,res)=>{
   try{
     const { id } = req.body;
-console.log(id);
+      console.log(id);
             if (!id) {
                 return res.status(400).json({
                     success: false,
@@ -516,6 +728,9 @@ console.log(id);
     updateSocialAccount,
     deleteSocialAccount,
     getSocialAccountById,
+    updateInfluencerAudienceGender,
+    updateInfluencerAudienceAge,
+    updateInfluencerAudienceLocations
   };
 };
 

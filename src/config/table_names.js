@@ -25,6 +25,9 @@ const tableNames = {
   TABLE_NAME_PAYMENT_STATUS: "payment_status",
   TABLE_NAME_PAYMENTS: "payments",
   TABLE_NAME_CAMPAIGN_CATEGORIES: "campaign_categories",
+  TABLE_NAME_INFLUENCER_AUDIENCE_AGE: "influencer_audience_age",
+  TABLE_NAME_INFLUENCER_AUDIENCE_GENDER: "influencer_audience_gender",
+  TABLE_NAME_INFLUENCER_AUDIENCE_LOCATIONS: "influencer_audience_locations",
 };
 
 module.exports = tableNames;

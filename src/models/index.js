@@ -13,6 +13,9 @@ const PlatformModel = require("./platform");
 const SocialAccountModel = require("./social_account");
 const CategoriesModel = require("./category");
 const InfluencerCategoryModel = require("./influencer_category");
+const InfluencerAudienceLocationsModel = require("./influencer_audience_locations");
+const InfluencerAudienceAgeModel = require("./influencer_audience_age");
+const InfluencerAudienceGenderModel = require("./influencer_audience_gender");
 const PlanModel = require("./plan");
 const SubscriptionStatusModel = require("./subscription_status");
 const BrandSubscriptionModel = require("./brand_subscription");
@@ -159,4 +162,7 @@ module.exports = {
   PaymentStatusModel,
   PaymentModel,
   CampaignCategoryModel,
+  InfluencerAudienceLocationsModel,
+  InfluencerAudienceAgeModel,
+  InfluencerAudienceGenderModel,
 };
