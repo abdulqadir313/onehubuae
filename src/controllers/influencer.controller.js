@@ -31,17 +31,11 @@ const InfluencerController = () => {
           { model: UserTypeModel, attributes: ["id", "type_name"] },
           { model: UserStatusModel, attributes: ["id", "status_name"] },
           { model: InfluencerProfileModel, required: true },
-          {
-            model: SocialAccountModel,
-            required: false,
-            include: [{ model: PlatformModel, attributes: ["id", "name", "icon"] }],
-          },
-          {
-            model: CategoriesModel,
-            through: { attributes: [] },
-            attributes: ["id", "name", "slug", "image"],
-            required: false,
-          },
+          {model: SocialAccountModel,required: false,include: [{ model: PlatformModel, attributes: ["id", "name", "icon"] }],},
+          {model: CategoriesModel,through: { attributes: [] },attributes: ["id", "name", "slug", "image"],required: false,},
+          { model: InfluencerAudienceGenderModel, required: false, attributes: ["id","male", "female", "other"]  },
+          { model: InfluencerAudienceAgeModel, required: false, attributes: ["id","age_range", "percentage"] },
+          { model: InfluencerAudienceLocationsModel, required: false, attributes: ["id","country", "percentage"] },
         ],
       });
 
@@ -54,6 +48,7 @@ const InfluencerController = () => {
 
       return res.status(200).json({
         success: true,
+        message: "Influencer profile data found.",
         data: user,
       });
     } catch (error) {
@@ -283,7 +278,7 @@ const updateInfluencerProfile = async (req, res) => {
         });
       }
 
-      const { name, phone, bio, country, city, dob, gender, category_ids } = req.body;
+      const { name, phone, bio, country, city, dob, gender, price_start, category_ids } = req.body;
       const profile = await InfluencerProfileModel.findOne({
         where: { user_id: userId },
       });
@@ -295,6 +290,8 @@ const updateInfluencerProfile = async (req, res) => {
         });
       }
 
+      
+
       const userUpdates = {};
       if (name != null) userUpdates.name = name;
       if (phone != null) userUpdates.phone = phone;
@@ -304,6 +301,11 @@ const updateInfluencerProfile = async (req, res) => {
       if (gender != null) userUpdates.gender = gender;
       if (bio != null) userUpdates.bio = bio;
       await user.update(userUpdates);
+
+      const userProfile = {};
+      if (price_start != null) userProfile.price_start = price_start;
+      if (name != null) userProfile.display_name = name;
+      await profile.update(userProfile);
 
       let categories = [];
       if (Array.isArray(category_ids)) {
@@ -319,6 +321,7 @@ const updateInfluencerProfile = async (req, res) => {
         message: "Influencer profile updated.",
         data: {
         user,
+        profile,
         categories,
       },
       });
@@ -357,6 +360,9 @@ const updateInfluencerProfile = async (req, res) => {
           where: { platform_id },
           required: true,
         },
+        { model: InfluencerAudienceGenderModel, required: false, attributes: ["id","male", "female", "other"]  },
+          { model: InfluencerAudienceAgeModel, required: false, attributes: ["id","age_range", "percentage"] },
+          { model: InfluencerAudienceLocationsModel, required: false, attributes: ["id","country", "percentage"] },
       ];
 
       if (category_ids.length > 0) {
@@ -681,6 +687,63 @@ const updateInfluencerProfile = async (req, res) => {
       });
     }
   }
+
+const deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // 🔍 Check user exists
+    const user = await UserModel.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // ❌ Delete related data first
+
+    // Influencer Profile
+    await InfluencerProfileModel.destroy({
+      where: { user_id: userId },
+    });
+
+    // Social Accounts
+    await SocialAccountModel.destroy({
+      where: { user_id: userId },
+    });
+
+    // Categories (Many-to-Many)
+    await user.setCategories([]);
+
+    // 👉 Audience tables (based on your DB: influencer_id)
+    await InfluencerAudienceGenderModel.destroy({
+      where: { influencer_id: userId },
+    });
+
+    await InfluencerAudienceLocationsModel.destroy({
+      where: { influencer_id: userId },
+    });
+
+    await InfluencerAudienceAgeModel.destroy({
+      where: { influencer_id: userId },
+    });
+
+    // 👤 Delete user
+    await user.destroy();
+
+    return res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 
 const getSocialAccountById = async(req,res)=>{

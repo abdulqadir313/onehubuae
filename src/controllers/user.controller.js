@@ -321,7 +321,7 @@ const UserController = () => {
       if (!current_password || !new_password) {
         return res.status(400).json({
           success: false,
-          message: "current_password and new_password are required.",
+          message: "Current password and New password are required.",
         });
       }
 

@@ -65,6 +65,10 @@ PlatformModel.hasMany(SocialAccountModel, { foreignKey: "platform_id" });
 SocialAccountModel.belongsTo(PlatformModel, { foreignKey: "platform_id" });
 SocialAccountModel.belongsTo(UserModel, { foreignKey: "user_id" });
 UserModel.hasMany(SocialAccountModel, { foreignKey: "user_id" });
+UserModel.hasMany(InfluencerAudienceGenderModel, { foreignKey: "influencer_id" });
+UserModel.hasMany(InfluencerAudienceAgeModel, { foreignKey: "influencer_id" });
+UserModel.hasMany(InfluencerAudienceLocationsModel, { foreignKey: "influencer_id" });
+
 
 UserModel.belongsToMany(CategoriesModel, {
   through: InfluencerCategoryModel,
