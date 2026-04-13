@@ -8,7 +8,7 @@ const { uploadImage } = require("../handlers/uploadImage");
 const {
   getInfluencerProfile,
   updateInfluencerProfile,
-  getInfluencersByPlatformId,
+  getInfluencersList,
   updateInfluencersPlatform,
   updateInfluencerCategories,
   getAllSocialAccounts,
@@ -20,7 +20,7 @@ const {
   updateInfluencerAudienceAge,
   updateInfluencerAudienceLocations,
 } = InfluencerController();
-router.post("/influencers-by-platform", getInfluencersByPlatformId);
+router.post("/get-influencers-list", getInfluencersList);
 router.get("/get-social-account-by-id", getSocialAccountById);
 router.get("/get-all-social-accounts", getAllSocialAccounts);
 router.use(jwtController.protect);

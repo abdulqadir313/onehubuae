@@ -1,4 +1,4 @@
-const { Op, where } = require("sequelize");
+const { Op, where, fn, col,literal  } = require("sequelize");
 const {
   UserModel,
   InfluencerProfileModel,
@@ -340,60 +340,229 @@ const updateInfluencerProfile = async (req, res) => {
    * @param res
    * @returns List of users with influencer profile and social account for the platform
    */
-  const getInfluencersByPlatformId = async (req, res) => {
-    try {
-      const { platform_id, category_id } = req.body;
 
-      if (!platform_id) {
-        return res.status(400).json({
-          success: false,
-          message: "platform_id is required.",
-        });
-      }
 
-      const category_ids = Array.isArray(category_id) ? category_id : [];
 
-      const includes = [
-        { model: InfluencerProfileModel, required: true },
-        {
-          model: SocialAccountModel,
-          where: { platform_id },
-          required: true,
-        },
-        { model: InfluencerAudienceGenderModel, required: false, attributes: ["id","male", "female", "other"]  },
-          { model: InfluencerAudienceAgeModel, required: false, attributes: ["id","age_range", "percentage"] },
-          { model: InfluencerAudienceLocationsModel, required: false, attributes: ["id","country", "percentage"] },
-      ];
+const getInfluencersList = async (req, res) => {
+  try {
+    const {
+      platform_id, // now array
+      category_id,
+      keyword,
+      min_price,
+      max_price,
+      min_followers,
+      max_followers,
+      min_engagement,
+      max_engagement,
+      page = 1,
+      limit = 10,
+    } = req.body;
 
-      if (category_ids.length > 0) {
-        includes.push({
-          model: CategoriesModel,
-          through: { attributes: [] },
-          where: { id: { [Op.in]: category_ids } },
-          required: true,
-        });
-      }
+    const offset = (page - 1) * limit;
 
-      const users = await UserModel.findAll({
-        attributes: { exclude: ["password"] },
-        include: [
-          { model: UserTypeModel, attributes: ["id", "type_name"] },
-          { model: UserStatusModel, attributes: ["id", "status_name"] },
-          ...includes,
-        ],
-      });
-
-      return res.status(200).json({
-        success: true,
-        data: users,
-      });
-    } catch (error) {
-      return res.status(500).json({
+    if (!platform_id || platform_id.length === 0) {
+      return res.status(400).json({
         success: false,
-        message: error.message,
+        message: "platform_id (array) is required.",
       });
     }
-  };
+
+    const category_ids = Array.isArray(category_id) ? category_id : [];
+
+    /* =========================
+       USER SEARCH
+    ========================== */
+    const userWhere = {};
+
+    if (keyword) {
+      userWhere[Op.or] = [
+        { name: { [Op.like]: `%${keyword}%` } },
+        { bio: { [Op.like]: `%${keyword}%` } },
+        { email: { [Op.like]: `%${keyword}%` } },
+      ];
+    }
+
+    /* =========================
+       SOCIAL FILTER
+    ========================== */
+    const socialWhere = {
+      platform_id: { [Op.in]: platform_id }, // ✅ multiple
+    };
+    if (min_followers || max_followers) {
+      socialWhere.followers = {};
+      if (min_followers)
+        socialWhere.followers[Op.gte] = min_followers;
+      if (max_followers)
+        socialWhere.followers[Op.lte] = max_followers;
+    }
+
+    if (min_engagement || max_engagement) {
+      socialWhere.engagement_rate = {};
+      if (min_engagement)
+        socialWhere.engagement_rate[Op.gte] = min_engagement;
+      if (max_engagement)
+        socialWhere.engagement_rate[Op.lte] = max_engagement;
+    }
+
+    /* =========================
+       PROFILE FILTER
+    ========================== */
+    const profileWhere = {};
+
+    if (min_price || max_price) {
+      profileWhere.price_start = {};
+      if (min_price) profileWhere.price_start[Op.gte] = min_price;
+      if (max_price) profileWhere.price_start[Op.lte] = max_price;
+    }
+
+    /* =========================
+       INCLUDE
+    ========================== */
+    const includes = [
+      {
+        model: InfluencerProfileModel,
+        required: true,
+        where: profileWhere,
+      },
+      {
+        model: SocialAccountModel,
+        required: true,
+        where: socialWhere,
+      },
+      {
+        model: InfluencerAudienceGenderModel,
+        required: false,
+        attributes: ["id", "male", "female", "other"],
+      },
+      {
+        model: InfluencerAudienceAgeModel,
+        required: false,
+        attributes: ["id", "age_range", "percentage"],
+      },
+      {
+        model: InfluencerAudienceLocationsModel,
+        required: false,
+        attributes: ["id", "country", "percentage"],
+      },
+    ];
+
+    if (category_ids.length > 0) {
+      includes.push({
+        model: CategoriesModel,
+        through: { attributes: [] },
+        where: { id: { [Op.in]: category_ids } },
+        required: true,
+      });
+    }
+
+    /* =========================
+       MAIN QUERY
+    ========================== */
+    const { count, rows } = await UserModel.findAndCountAll({
+      where: userWhere,
+      attributes: { exclude: ["password"] },
+      include: [
+        { model: UserTypeModel, attributes: ["id", "type_name"] },
+        { model: UserStatusModel, attributes: ["id", "status_name"] },
+        ...includes,
+      ],
+      distinct: true,
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+      order: [["id", "DESC"]],
+    });
+
+    /* =========================
+       FILTER COUNTS
+    ========================== */
+
+    // 1. Category Counts
+    const categoryCounts = await CategoriesModel.findAll({
+      attributes: [
+        "id",
+        "name",
+        [fn("COUNT", col("users.id")), "count"],
+      ],
+      include: [
+        {
+          model: UserModel,
+          attributes: [],
+          required: true,
+          include: [
+            {
+              model: SocialAccountModel,
+              attributes: [],
+              required: true,
+              where: socialWhere,
+            },
+            {
+              model: InfluencerProfileModel,
+              attributes: [],
+              required: true,
+              where: profileWhere,
+            },
+          ],
+        },
+      ],
+      group: ["Categories.id"],
+    });
+
+    // 2. Platform Counts
+    const platformCounts = await SocialAccountModel.findAll({
+      attributes: [
+        "platform_id",
+        [fn("COUNT", col("user_id")), "count"],
+      ],
+      where: socialWhere,
+      group: ["platform_id"],
+    });
+
+    // 3. Price Range Count (optional buckets)
+    const priceCounts = await InfluencerProfileModel.findAll({
+  attributes: [
+    [
+      literal(`
+        CASE 
+          WHEN price_start < 100 THEN 'low'
+          WHEN price_start BETWEEN 100 AND 500 THEN 'medium'
+          ELSE 'high'
+        END
+      `),
+      "price_range", // ✅ changed alias
+    ],
+    [fn("COUNT", col("id")), "count"],
+  ],
+  group: [
+    literal(`
+      CASE 
+        WHEN price_start < 100 THEN 'low'
+        WHEN price_start BETWEEN 100 AND 500 THEN 'medium'
+        ELSE 'high'
+      END
+    `),
+  ],
+});
+
+    return res.status(200).json({
+      success: true,
+      total: count,
+      current_page: page,
+      total_pages: Math.ceil(count / limit),
+      filters: {
+        categories: categoryCounts,
+        platforms: platformCounts,
+        price_ranges: priceCounts,
+      },
+      data: rows,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
   /**
    * @description Update influencer's platforms (replaces all; user can have multiple)
@@ -783,7 +952,7 @@ const getSocialAccountById = async(req,res)=>{
   return {
     getInfluencerProfile,
     updateInfluencerProfile,
-    getInfluencersByPlatformId,
+    getInfluencersList,
     updateInfluencersPlatform,
     updateInfluencerCategories,
     getAllSocialAccounts,
