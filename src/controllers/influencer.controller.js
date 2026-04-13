@@ -505,7 +505,7 @@ const getInfluencersList = async (req, res) => {
           ],
         },
       ],
-      group: ["Categories.id"],
+      group: ["categories.id"],
     });
 
     // 2. Platform Counts
