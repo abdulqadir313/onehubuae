@@ -346,7 +346,7 @@ const updateInfluencerProfile = async (req, res) => {
 const getInfluencersList = async (req, res) => {
   try {
     const {
-      platform_id,
+      platform_id, // now array
       category_id,
       keyword,
       min_price,
@@ -370,7 +370,9 @@ const getInfluencersList = async (req, res) => {
 
     const category_ids = Array.isArray(category_id) ? category_id : [];
 
-    /* ========================= USER SEARCH ========================== */
+    /* =========================
+       USER SEARCH
+    ========================== */
     const userWhere = {};
 
     if (keyword) {
@@ -381,11 +383,12 @@ const getInfluencersList = async (req, res) => {
       ];
     }
 
-    /* ========================= SOCIAL FILTER ========================== */
+    /* =========================
+       SOCIAL FILTER
+    ========================== */
     const socialWhere = {
-      platform_id: { [Op.in]: platform_id },
+      platform_id: { [Op.in]: platform_id }, // ✅ multiple
     };
-
     if (min_followers || max_followers) {
       socialWhere.followers = {};
       if (min_followers)
@@ -402,7 +405,9 @@ const getInfluencersList = async (req, res) => {
         socialWhere.engagement_rate[Op.lte] = max_engagement;
     }
 
-    /* ========================= PROFILE FILTER ========================== */
+    /* =========================
+       PROFILE FILTER
+    ========================== */
     const profileWhere = {};
 
     if (min_price || max_price) {
@@ -411,7 +416,9 @@ const getInfluencersList = async (req, res) => {
       if (max_price) profileWhere.price_start[Op.lte] = max_price;
     }
 
-    /* ========================= INCLUDE ========================== */
+    /* =========================
+       INCLUDE
+    ========================== */
     const includes = [
       {
         model: InfluencerProfileModel,
@@ -449,7 +456,9 @@ const getInfluencersList = async (req, res) => {
       });
     }
 
-    /* ========================= MAIN QUERY ========================== */
+    /* =========================
+       MAIN QUERY
+    ========================== */
     const { count, rows } = await UserModel.findAndCountAll({
       where: userWhere,
       attributes: { exclude: ["password"] },
@@ -464,40 +473,49 @@ const getInfluencersList = async (req, res) => {
       order: [["id", "DESC"]],
     });
 
-    /* ========================= FILTER COUNTS ========================== */
+    /* =========================
+       FILTER COUNTS
+    ========================== */
 
-    // ✅ FIXED HERE
+    // 1. Category Counts
     const categoryCounts = await CategoriesModel.findAll({
-      attributes: [
-        "id",
-        "name",
-        [fn("COUNT", col("users.id")), "count"],
-      ],
+  attributes: [
+    "id",
+    "name",
+    [fn("COUNT", col("users.id")), "count"],
+  ],
+  include: [
+    {
+      model: UserModel,
+      attributes: [],
+      required: true,
+
+      through: {
+        attributes: [], // ✅ REMOVE influencer_categories.id (MAIN FIX)
+      },
+
       include: [
         {
-          model: UserModel,
+          model: SocialAccountModel,
           attributes: [],
           required: true,
-          include: [
-            {
-              model: SocialAccountModel,
-              attributes: [],
-              required: true,
-              where: socialWhere,
-            },
-            {
-              model: InfluencerProfileModel,
-              attributes: [],
-              required: true,
-              where: profileWhere,
-            },
-          ],
+          where: socialWhere,
+        },
+        {
+          model: InfluencerProfileModel,
+          attributes: [],
+          required: true,
+          where: profileWhere,
         },
       ],
-      group: ["categories.id", "categories.name"], // ✅ IMPORTANT FIX
-    });
+    },
+  ],
+  group: ["categories.id", "categories.name"],
+  raw: true,
+  subQuery: false,
+});
 
-    // Platform Counts
+    // 2. Platform Counts
     const platformCounts = await SocialAccountModel.findAll({
       attributes: [
         "platform_id",
@@ -507,31 +525,31 @@ const getInfluencersList = async (req, res) => {
       group: ["platform_id"],
     });
 
-    // Price Range Counts
+    // 3. Price Range Count (optional buckets)
     const priceCounts = await InfluencerProfileModel.findAll({
-      attributes: [
-        [
-          literal(`
-            CASE 
-              WHEN price_start < 100 THEN 'low'
-              WHEN price_start BETWEEN 100 AND 500 THEN 'medium'
-              ELSE 'high'
-            END
-          `),
-          "price_range",
-        ],
-        [fn("COUNT", col("id")), "count"],
-      ],
-      group: [
-        literal(`
-          CASE 
-            WHEN price_start < 100 THEN 'low'
-            WHEN price_start BETWEEN 100 AND 500 THEN 'medium'
-            ELSE 'high'
-          END
-        `),
-      ],
-    });
+  attributes: [
+    [
+      literal(`
+        CASE 
+          WHEN price_start < 100 THEN 'low'
+          WHEN price_start BETWEEN 100 AND 500 THEN 'medium'
+          ELSE 'high'
+        END
+      `),
+      "price_range", // ✅ changed alias
+    ],
+    [fn("COUNT", col("id")), "count"],
+  ],
+  group: [
+    literal(`
+      CASE 
+        WHEN price_start < 100 THEN 'low'
+        WHEN price_start BETWEEN 100 AND 500 THEN 'medium'
+        ELSE 'high'
+      END
+    `),
+  ],
+});
 
     return res.status(200).json({
       success: true,
