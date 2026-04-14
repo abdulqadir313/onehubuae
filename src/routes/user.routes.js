@@ -13,11 +13,15 @@ const {
   updateProfilePicture,
   changePassword,
   deleteAccount,
+  forgotPassword,
+  resetPassword,
 } = UserController();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 router.use(jwtController.protect);  
 router.get("/get-profile", getMyProfile);
 router.put("/update-profile", updateMyProfile);

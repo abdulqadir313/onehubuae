@@ -356,7 +356,7 @@ const getInfluencersList = async (req, res) => {
       min_engagement,
       max_engagement,
       page = 1,
-      limit = 10,
+      limit = 12,
     } = req.body;
 
     const offset = (page - 1) * limit;
