@@ -415,7 +415,6 @@ const forgotPassword = async (req, res) => {
     );
 
     const resetURL = `${process.env.FRONTEND_URL}/reset-password/${token}`;
-console.log(resetURL);
     await sendEmail({
       to: user.email,
       subject: "OneHub - UAE Reset Password",
@@ -425,24 +424,16 @@ console.log(resetURL);
   <meta charset="UTF-8" />
 </head>
 <body style="margin:0; padding:0; background:#f5f5f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">
-
   <table width="100%" cellpadding="0" cellspacing="0" style="padding:30px 15px;">
     <tr>
       <td align="center">
-
-        <!-- CONTAINER -->
         <table width="520" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 6px 25px rgba(0,0,0,0.08);">
-
-          <!-- GOLD HEADER -->
           <tr>
             <td style="background:#c9a227; padding:35px 30px; text-align:center; color:#ffffff;">
-              
               <img src="https://onehub.ae/wp-content/uploads/2023/10/One-Hub-Logo.webp" width="70" style="margin-bottom:15px;"/>
-
               <h2 style="margin:0; font-size:22px; font-weight:600;">
                 Reset Your Password Securely
               </h2>
-
               <p style="margin-top:10px; font-size:14px; opacity:0.9;">
                 We’ll send you a secure link to reset your password.<br/>
                 The link will expire in 15 minutes.
@@ -450,64 +441,45 @@ console.log(resetURL);
 
             </td>
           </tr>
-
-          <!-- BODY -->
           <tr>
             <td style="padding:30px; color:#333;">
-
               <p style="font-size:15px; margin:0 0 15px;">
                 Hi <strong>${user.name || "User"}</strong>,
               </p>
-
               <p style="font-size:14px; line-height:1.6; margin-bottom:25px;">
                 We received a request to reset your password. Click the button below to create a new one.
               </p>
-
-              <!-- BUTTON -->
               <div style="text-align:center; margin-bottom:25px;">
                 <a href="${resetURL}"
                    style="background:#c9a227; color:#ffffff; padding:12px 28px; border-radius:8px; text-decoration:none; font-size:14px; font-weight:500; display:inline-block;">
                   Reset Password
                 </a>
               </div>
-
-              <!-- TEXT -->
               <p style="font-size:13px; color:#666; line-height:1.6;">
                 If you didn’t request this, you can safely ignore this email.
               </p>
-
-              <!-- FALLBACK -->
               <p style="font-size:12px; color:#999; word-break:break-all; margin-top:15px;">
                 Or copy this link:<br/>
                 <a href="${resetURL}" style="color:#c9a227;">${resetURL}</a>
               </p>
-
             </td>
           </tr>
-
-          <!-- FOOTER -->
           <tr>
             <td style="background:#fafafa; text-align:center; padding:20px; font-size:12px; color:#888;">
-              
               © 2026 OneHub. All rights reserved.<br/><br/>
-
-              <!-- SOCIAL -->
               <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" width="18"/></a>
               <a href="#" style="margin:0 8px;"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" width="18"/></a>
               <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" width="18"/></a>
               <a href="#"><img style="margin:0 8px;" src="https://cdn-icons-png.flaticon.com/512/3536/3536505.png" width="18"/></a>
             </td>
           </tr>
-
         </table>
-
       </td>
     </tr>
   </table>
-
 </body>
 </html>`,
-    });
+    }).catch(err => console.log("Email error:", err));
 
     return res.status(200).json({
       success: true,
@@ -538,6 +510,8 @@ const sendEmail = async ({ to, subject, html }) => {
     html,
   });
 };
+
+
 
 
 
