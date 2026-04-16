@@ -59,6 +59,43 @@ const InfluencerController = () => {
     }
   };
 
+  const getPublicInfluencerProfile = async (req, res) => {
+  try {
+    const { slug } = req.body;
+    const user = await UserModel.findOne({
+      where: { slug },
+      attributes: { exclude: ["password"] },
+      include: [
+        { model: UserTypeModel, attributes: ["id", "type_name"] },
+          { model: UserStatusModel, attributes: ["id", "status_name"] },
+          { model: InfluencerProfileModel, required: true },
+          {model: SocialAccountModel,required: false,include: [{ model: PlatformModel, attributes: ["id", "name", "icon"] }],},
+          {model: CategoriesModel,through: { attributes: [] },attributes: ["id", "name", "slug", "image"],required: false,},
+          { model: InfluencerAudienceGenderModel, required: false, attributes: ["id","male", "female", "other"]  },
+          { model: InfluencerAudienceAgeModel, required: false, attributes: ["id","age_range", "percentage"] },
+          { model: InfluencerAudienceLocationsModel, required: false, attributes: ["id","country", "percentage"] },
+      ],
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Influencer not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
   /**
    * @description Update influencer profile (display_name, price_start, bio, profile_pic)
    * @param req
@@ -470,7 +507,7 @@ const getInfluencersList = async (req, res) => {
       distinct: true,
       limit: parseInt(limit),
       offset: parseInt(offset),
-      order: [["id", "DESC"]],
+      order: [["name", "ASC"]],
     });
 
     /* =========================
@@ -969,7 +1006,8 @@ const getSocialAccountById = async(req,res)=>{
     getSocialAccountById,
     updateInfluencerAudienceGender,
     updateInfluencerAudienceAge,
-    updateInfluencerAudienceLocations
+    updateInfluencerAudienceLocations,
+    getPublicInfluencerProfile,
   };
 };
 

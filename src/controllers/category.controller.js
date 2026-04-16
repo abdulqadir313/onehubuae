@@ -19,6 +19,7 @@ const CategoriesController = () => {
         where: {
           is_active: 1,
         },
+        order: [["name", "ASC"]],
       });
       res.status(200).json({
         success: true,

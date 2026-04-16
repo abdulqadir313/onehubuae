@@ -16,7 +16,7 @@ const PlatformController = () => {
         try {
 
             const platforms = await PlatformModel.findAll({
-                order: [["id", "DESC"]],
+                order: [["id", "ASC"]],
             });
 
             return res.status(200).json({

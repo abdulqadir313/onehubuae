@@ -21,6 +21,16 @@ const UserController = () => {
    * @param res
    * @returns Created user with token
    */
+
+  const slugify = (text) => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "") // remove special chars
+      .replace(/\s+/g, "-")         // spaces → hyphen
+      .replace(/-+/g, "-");         // remove multiple hyphens
+  };
+
   const registerUser = async (req, res) => {
     try {
       const {
@@ -57,6 +67,23 @@ const UserController = () => {
 
       const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
       const t = await database.transaction();
+      const baseName = name;
+      let slug = slugify(baseName);
+
+      // ensure unique slug
+      let count = 1;
+      let uniqueSlug = slug;
+
+      while (true) {
+        const existingSlug = await UserModel.findOne({
+          where: { slug: uniqueSlug },
+          transaction: t,
+        });
+
+        if (!existingSlug) break;
+
+        uniqueSlug = `${slug}-${count++}`;
+      }
       try {
         const user = await UserModel.create(
           {
@@ -71,6 +98,7 @@ const UserController = () => {
             is_verified: 0,
             is_active: 1,
             bio: bio || null,
+            slug: uniqueSlug,
           },
           { transaction: t }
         );
