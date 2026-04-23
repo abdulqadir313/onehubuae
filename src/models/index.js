@@ -29,6 +29,7 @@ const OrderModel = require("./order");
 const OrderStatusLogModel = require("./order_status_log");
 const PaymentStatusModel = require("./payment_status");
 const PaymentModel = require("./payment");
+const InfluencerGalleryModel = require("./influencer_gallery");
 
 // User module
 UserModel.belongsTo(UserTypeModel, { foreignKey: "user_type_id" });
@@ -68,6 +69,7 @@ UserModel.hasMany(SocialAccountModel, { foreignKey: "user_id" });
 UserModel.hasMany(InfluencerAudienceGenderModel, { foreignKey: "influencer_id" });
 UserModel.hasMany(InfluencerAudienceAgeModel, { foreignKey: "influencer_id" });
 UserModel.hasMany(InfluencerAudienceLocationsModel, { foreignKey: "influencer_id" });
+UserModel.hasMany(InfluencerGalleryModel, { foreignKey: "influencer_id" });
 
 
 UserModel.belongsToMany(CategoriesModel, {
@@ -169,4 +171,5 @@ module.exports = {
   InfluencerAudienceLocationsModel,
   InfluencerAudienceAgeModel,
   InfluencerAudienceGenderModel,
+  InfluencerGalleryModel,
 };

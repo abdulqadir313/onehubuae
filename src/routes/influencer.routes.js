@@ -20,6 +20,7 @@ const {
   updateInfluencerAudienceAge,
   updateInfluencerAudienceLocations,
   getPublicInfluencerProfile,
+  updateInfluencerGallery,
 } = InfluencerController();
 router.post("/get-influencers-list", getInfluencersList);
 router.get("/get-social-account-by-id", getSocialAccountById);
@@ -29,7 +30,11 @@ router.use(jwtController.protect);
 router.use(jwtController.allowRoles(USER_TYPES.INFLUENCER));
 router.get("/get-profile", getInfluencerProfile);
 router.put("/update-profile", updateInfluencerProfile);
-router.put("/update-profiles", uploadImage.single("image"), updateInfluencerProfile);
+router.put(
+  "/update-gallery",
+  uploadImage.array("gallery_pic", 10),
+  updateInfluencerGallery
+);
 router.put("/update-platforms", updateInfluencersPlatform);
 router.put("/update-categories", updateInfluencerCategories);
 router.put("/update-audience-gender", updateInfluencerAudienceGender);

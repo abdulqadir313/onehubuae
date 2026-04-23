@@ -28,6 +28,7 @@ const tableNames = {
   TABLE_NAME_INFLUENCER_AUDIENCE_AGE: "influencer_audience_age",
   TABLE_NAME_INFLUENCER_AUDIENCE_GENDER: "influencer_audience_gender",
   TABLE_NAME_INFLUENCER_AUDIENCE_LOCATIONS: "influencer_audience_locations",
+  TABLE_NAME_INFLUENCER_GALLERY: "influencer_gallery",
 };
 
 module.exports = tableNames;

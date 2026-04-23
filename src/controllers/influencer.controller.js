@@ -5,6 +5,7 @@ const {
   InfluencerAudienceGenderModel,
   InfluencerAudienceLocationsModel,
   InfluencerAudienceAgeModel,
+  InfluencerGalleryModel,
   UserTypeModel,
   UserStatusModel,
   SocialAccountModel,
@@ -13,7 +14,7 @@ const {
 } = require("../models");
 const { uploadImage } = require("../handlers/uploadImage");
 const { errorMonitor } = require("nodemailer/lib/xoauth2");
-
+const { deleteImage } = require("../handlers/uploadImage");
 
 const InfluencerController = () => {
   /**
@@ -31,6 +32,7 @@ const InfluencerController = () => {
           { model: UserTypeModel, attributes: ["id", "type_name"] },
           { model: UserStatusModel, attributes: ["id", "status_name"] },
           { model: InfluencerProfileModel, required: true },
+          { model: InfluencerGalleryModel, required: false , attributes: ["id","image_path"]},
           {model: SocialAccountModel,required: false,include: [{ model: PlatformModel, attributes: ["id", "name", "icon"] }],},
           {model: CategoriesModel,through: { attributes: [] },attributes: ["id", "name", "slug", "image"],required: false,},
           { model: InfluencerAudienceGenderModel, required: false, attributes: ["id","male", "female", "other"]  },
@@ -71,6 +73,7 @@ const InfluencerController = () => {
           { model: InfluencerProfileModel, required: true },
           {model: SocialAccountModel,required: false,include: [{ model: PlatformModel, attributes: ["id", "name", "icon"] }],},
           {model: CategoriesModel,through: { attributes: [] },attributes: ["id", "name", "slug", "image"],required: false,},
+          { model: InfluencerGalleryModel, required: false , attributes: ["id","image_path"]},
           { model: InfluencerAudienceGenderModel, required: false, attributes: ["id","male", "female", "other"]  },
           { model: InfluencerAudienceAgeModel, required: false, attributes: ["id","age_range", "percentage"] },
           { model: InfluencerAudienceLocationsModel, required: false, attributes: ["id","country", "percentage"] },
@@ -287,6 +290,58 @@ const updateInfluencerAudienceLocations = async (req, res) => {
       AudienceLocationsData: insertedData,
     });
 
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+const updateInfluencerGallery = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User not authenticated.",
+      });
+    }
+    const files = req.files || (req.file ? [req.file] : []);
+    if (!files.length) {
+      return res.status(400).json({
+        success: false,
+        message: "No images uploaded. Use field name 'gallery_pic'.",
+      });
+    }
+    const newImages = files.map(file => file.path);
+    const oldImages = await InfluencerGalleryModel.findAll({
+      where: { influencer_id: userId }
+    });
+    for (const item of oldImages) {
+      if (item.image_path) {
+        await deleteImage(item.image_path); // delete from storage (Cloudinary/local)
+      }
+    }
+    await InfluencerGalleryModel.destroy({
+      where: { influencer_id: userId }
+    });
+    const galleryData = newImages.map(path => ({
+      influencer_id: userId,
+      image_path: path,
+    }));
+    const insertedData = await InfluencerGalleryModel.bulkCreate(galleryData);
+    const imageData = insertedData.map(item => ({
+      id: item.id,
+      image_path: item.image_path
+    }));
+    return res.status(200).json({
+      success: true,
+      message: "Gallery saved successfully.",
+      data: imageData,
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -1008,6 +1063,7 @@ const getSocialAccountById = async(req,res)=>{
     updateInfluencerAudienceAge,
     updateInfluencerAudienceLocations,
     getPublicInfluencerProfile,
+    updateInfluencerGallery,
   };
 };
 
