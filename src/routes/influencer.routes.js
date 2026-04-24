@@ -25,7 +25,7 @@ const {
 router.post("/get-influencers-list", getInfluencersList);
 router.get("/get-social-account-by-id", getSocialAccountById);
 router.get("/get-all-social-accounts", getAllSocialAccounts);
-router.get("/public-profile", getPublicInfluencerProfile);
+router.post("/public-profile", getPublicInfluencerProfile);
 router.use(jwtController.protect);
 router.use(jwtController.allowRoles(USER_TYPES.INFLUENCER));
 router.get("/get-profile", getInfluencerProfile);
