@@ -5,9 +5,9 @@ const jwtController = require("../config/jwtVerify");
 const { USER_TYPES } = require("../utils/constants");
 const { uploadImage } = require("../handlers/uploadImage");
 
-const { getBrandProfile, updateBrandProfile, updateBrandProfileImages, updateBrandSocialProfile, updateBrandAccountDetails } =
+const { getBrandProfile, updateBrandProfile, updateBrandProfileImages, updateBrandSocialProfile, updateBrandAccountDetails, getBrandsListing } =
   BrandController();
-
+router.get("/brands-list", getBrandsListing);
 router.use(jwtController.protect);
 router.use(jwtController.allowRoles(USER_TYPES.BRAND));
 router.get("/get-profile", getBrandProfile);

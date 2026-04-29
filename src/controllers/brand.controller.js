@@ -1,3 +1,4 @@
+const { Op, where, fn, col,literal  } = require("sequelize");
 const {
   UserModel,
   BrandProfileModel,
@@ -249,12 +250,73 @@ const BrandController = () => {
 };
   
 
+const getBrandsListing = async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 10,
+      search = ""
+    } = req.body;
+
+    const offset = (page - 1) * limit;
+console.log(search);
+    const whereCondition = {
+      user_type_id: 2 // brand user type id (change if different)
+    };
+
+    if (search) {
+      whereCondition.name = {
+        [Op.like]: `%${search}%`
+      };
+    }
+
+    const { count, rows } = await UserModel.findAndCountAll({
+      where: whereCondition,
+      attributes: {
+        exclude: ["password"]
+      },
+      include: [
+        {
+          model: UserTypeModel,
+          attributes: ["id","type_name"]
+        },
+        {
+          model: UserStatusModel,
+          attributes: ["id","status_name"]
+        },
+        {
+          model: BrandProfileModel,
+          required: true
+        }
+      ],
+      order: [["id","DESC"]],
+      limit: parseInt(limit),
+      offset: parseInt(offset)
+    });
+
+    return res.status(200).json({
+      success: true,
+      total_records: count,
+      current_page: parseInt(page),
+      total_pages: Math.ceil(count / limit),
+      data: rows
+    });
+
+  } catch(error){
+    return res.status(500).json({
+      success:false,
+      message:error.message
+    });
+  }
+};
+
   return {
     getBrandProfile,
     updateBrandProfile,
     updateBrandSocialProfile,
     updateBrandProfileImages,
-    updateBrandAccountDetails
+    updateBrandAccountDetails,
+    getBrandsListing,
   }
 };
 

@@ -24,6 +24,7 @@ const CampaignModel = require("./campaign");
 const CampaignCategoryModel = require("./campaign_category");
 const ProposalStatusModel = require("./proposal_status");
 const CampaignProposalModel = require("./campaign_proposal");
+const CampaignInfluencersModel = require("./campaign_influencers");
 const OrderStatusModel = require("./order_status");
 const OrderModel = require("./order");
 const OrderStatusLogModel = require("./order_status_log");
@@ -101,7 +102,19 @@ CampaignModel.belongsTo(CampaignStatusModel, { foreignKey: "status_id" });
 UserModel.hasMany(CampaignModel, { foreignKey: "brand_id" });
 CampaignModel.hasMany(CampaignCategoryModel, {foreignKey: "campaign_id",as: "campaign_categories", });
 CampaignCategoryModel.belongsTo(CategoriesModel, {foreignKey: "category_id",as: "category", });
+CampaignProposalModel.hasMany(CampaignInfluencersModel, {
+  foreignKey: "proposal_id",
+  as: "campaign_influencers"
+});
 
+CampaignInfluencersModel.belongsTo(CampaignProposalModel, {
+  foreignKey: "proposal_id"
+});
+
+CampaignInfluencersModel.belongsTo(UserModel, {
+   foreignKey: "influencer_id",
+   as: "influencer"
+});
 // Proposal module
 ProposalStatusModel.hasMany(CampaignProposalModel, { foreignKey: "status_id" });
 CampaignProposalModel.belongsTo(CampaignModel, { foreignKey: "campaign_id" });
@@ -172,4 +185,5 @@ module.exports = {
   InfluencerAudienceAgeModel,
   InfluencerAudienceGenderModel,
   InfluencerGalleryModel,
+  CampaignInfluencersModel,
 };

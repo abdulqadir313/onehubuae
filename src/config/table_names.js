@@ -19,6 +19,7 @@ const tableNames = {
   TABLE_NAME_CAMPAIGNS: "campaigns",
   TABLE_NAME_PROPOSAL_STATUS: "proposal_status",
   TABLE_NAME_CAMPAIGN_PROPOSALS: "campaign_proposals",
+  TABLE_NAME_CAMPAIGN_INFLUENCERS: "campaign_influencers",
   TABLE_NAME_ORDER_STATUS: "order_status",
   TABLE_NAME_ORDERS: "orders",
   TABLE_NAME_ORDER_STATUS_LOGS: "order_status_logs",
