@@ -7,6 +7,7 @@ const { uploadImage } = require("../handlers/uploadImage");
 const {
   registerUser,
   loginUser,
+  loginAdminUser,
   logoutUser,
   getMyProfile,
   updateMyProfile,
@@ -19,6 +20,7 @@ const {
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.post("/admin-login", loginAdminUser);
 router.post("/logout", logoutUser);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);

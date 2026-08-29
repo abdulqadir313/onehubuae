@@ -202,6 +202,57 @@ const UserController = () => {
     }
   };
 
+  const loginAdminUser = async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      if (!email || !password) {
+        return res.status(400).json({
+          success: false,
+          message: "Email and password are required.",
+        });
+      }
+
+      const user = await UserModel.findOne({
+        where: { email, is_active: 1 },
+        include: [
+          { model: UserTypeModel, attributes: ["id", "type_name"] },
+          { model: UserStatusModel, attributes: ["id", "status_name"] },
+          { model: BrandProfileModel, required: false },
+          { model: InfluencerProfileModel, required: false },
+        ],
+      });
+
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid email or password.",
+        });
+      }
+
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid email or password.",
+        });
+      }
+
+      const token = createToken(user);
+      const { password: _, ...userData } = user.toJSON();
+      return res.status(200).json({
+        success: true,
+        message: "Login successful.",
+        token,
+        data: userData,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  };
+
   /**
    * @description Log out the current user
    * @param req
@@ -601,6 +652,7 @@ const resetPassword = async (req, res) => {
   return {
     registerUser,
     loginUser,
+    loginAdminUser,
     logoutUser,
     getMyProfile,
     updateMyProfile,
