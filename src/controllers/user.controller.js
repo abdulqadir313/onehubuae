@@ -213,7 +213,7 @@ const UserController = () => {
       }
 
       const user = await UserModel.findOne({
-        where: { email, is_active: 1 },
+        where: { email, user_type_id: 1, is_active: 1 },
         include: [
           { model: UserTypeModel, attributes: ["id", "type_name"] },
           { model: UserStatusModel, attributes: ["id", "status_name"] },
