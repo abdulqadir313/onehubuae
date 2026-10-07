@@ -47,6 +47,9 @@ const UserController = () => {
         display_name,
         bio,
         price_start,
+        terms_accepted, 
+        promotional_updates_consent,
+        primary_platform_id,
       } = req.body;
 
       if (!name || !email || !password || !user_type_id) {
@@ -96,6 +99,9 @@ const UserController = () => {
             user_type_id,
             status_id: 1,
             is_verified: 0,
+            terms_accepted: terms_accepted, 
+            promotional_updates_consent: promotional_updates_consent,
+            primary_platform_id: primary_platform_id,
             is_active: 1,
             bio: bio || null,
             slug: uniqueSlug,
@@ -127,6 +133,115 @@ const UserController = () => {
         await t.commit();
         const token = createToken(user);
         const { password: _, ...userData } = user.toJSON();
+        if (user_type_id === 3) {
+        const loginURL = `${process.env.FRONTEND_URL}/`;
+    await sendEmail({
+      to: user.email,
+      subject: "Welcome to OneHub – Your Influencer Journey Starts Here 🚀",
+      html: `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+</head>
+<body style="margin:0; padding:0; background:#f5f5f5; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:30px 15px;">
+    <tr>
+      <td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 6px 25px rgba(0,0,0,0.08);">
+          <!-- Header -->
+          <tr>
+            <td style="background:#c9a227; padding:35px 30px; text-align:center; color:#ffffff;">
+              <img src="https://onehub.ae/wp-content/uploads/2023/10/One-Hub-Logo.webp" width="70" style="margin-bottom:15px;" />
+              <h2 style="margin:0; font-size:22px; font-weight:600;">
+                Welcome to OneHub
+              </h2>
+              <p style="margin-top:10px; font-size:14px; opacity:0.9;">
+                Your influencer account has been successfully created.<br/>
+                Complete your profile and start receiving campaign opportunities.
+              </p>
+            </td>
+          </tr>
+          <!-- Content -->
+          <tr>
+            <td style="padding:30px; color:#333;">
+              <p style="font-size:15px; margin:0 0 15px;">
+                Hi <strong>${user.name}</strong>,
+              </p>
+              <p style="font-size:14px; line-height:1.7; margin-bottom:20px;">
+                Thank you for joining <strong>OneHub</strong>, the influencer marketing platform connecting creators with leading brands across the UAE and GCC.
+              </p>
+              <p style="font-size:14px; line-height:1.7; margin-bottom:20px;">
+                Your account has been successfully registered. To increase your visibility and campaign matching opportunities, we recommend completing your profile and connecting your social media accounts.
+              </p>
+              <div style="text-align:center; margin:30px 0;">
+                <a href="${loginURL}"
+                   style="background:#c9a227; color:#ffffff; padding:12px 28px; border-radius:8px; text-decoration:none; font-size:14px; font-weight:500; display:inline-block;">
+                  Complete Your Profile
+                </a>
+              </div>
+              <div style="background:#f8f8f8; border-radius:8px; padding:18px; margin-bottom:20px;">
+                <p style="margin:0 0 10px; font-size:14px; font-weight:600;">
+                  Next Steps:
+                </p>
+                <ul style="padding-left:18px; margin:0; font-size:14px; line-height:1.8; color:#555;">
+                  <li>Complete your influencer profile.</li>
+                  <li>Add your social media accounts.</li>
+                  <li>Upload your profile image and portfolio.</li>
+                  <li>Update audience demographics and categories.</li>
+                  <li>Start receiving campaign invitations from brands.</li>
+                </ul>
+              </div>
+              <p style="font-size:14px; line-height:1.7; color:#555;">
+                Our team reviews profiles regularly to help brands discover the right creators for their campaigns.
+              </p>
+              <p style="font-size:14px; line-height:1.7; color:#555;">
+                If you have any questions, feel free to contact our support team.
+              </p>
+              <p style="font-size:14px; margin-top:25px;">
+                Best Regards,<br/>
+                <strong>OneHub Team</strong>
+              </p>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="background:#fafafa; text-align:center; padding:20px; font-size:12px; color:#888;">
+              © 2026 OneHub. All rights reserved.<br/>
+              <br/>
+              <a href="https://www.facebook.com/people/Onehub/100064185243040/" target="_blank" style="text-decoration:none;">
+              <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" width="18" alt="Facebook" />
+            </a>
+            <a href="https://www.instagram.com/onehubuae/" target="_blank" style="margin:0 5px; text-decoration:none;">
+              <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" width="18" alt="Instagram" />
+            </a>
+            <a href="https://www.linkedin.com/company/onehub-ae/" target="_blank" style="margin:0 5px; text-decoration:none;">
+              <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="18" alt="LinkedIn" />
+            </a>
+            <a href="https://www.tiktok.com/@onehub.ae" target="_blank" style="margin:0 5px; text-decoration:none;">
+              <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" width="18" alt="TikTok" />
+            </a>
+            <a href="https://www.snapchat.com/add/onehub.ae" target="_blank" style="margin:0 5px; text-decoration:none;">
+              <img src="https://cdn-icons-png.flaticon.com/512/3670/3670147.png" width="18" alt="Snapchat" />
+            </a>
+            <a href="https://in.pinterest.com/onehubinfluencers/" target="_blank" style="margin:0 5px; text-decoration:none;">
+              <img src="https://cdn-icons-png.flaticon.com/512/145/145808.png" width="18" alt="Pinterest" />
+            </a>
+            <a href="https://x.com/Onehub_ae" target="_blank" style="margin:0 5px; text-decoration:none;">
+              <img src="https://cdn-icons-png.flaticon.com/512/5969/5969020.png" width="18" alt="X" />
+            </a>
+            <a href="https://www.youtube.com/@OnehubUAE" target="_blank" style="margin:0 5px; text-decoration:none;">
+              <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" width="18" alt="YouTube" />
+            </a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`,
+    }).catch(err => console.log("Email error Abdul:", err));
+  }
         return res.status(201).json({
           success: true,
           message: "Registration successful.",
@@ -487,9 +602,9 @@ const forgotPassword = async (req, res) => {
         id: user.id,
         type: "reset_password",
       },
-      process.env.JWT_PRIVATE_KEY_RESET_PASSWORD, // ✅ same key
+      process.env.JWT_PRIVATE_KEY_RESET_PASSWORD, 
       {
-        expiresIn: process.env.JWT_RESET_PASSWORD_EXPIRES_IN, // ✅ 15m
+        expiresIn: process.env.JWT_RESET_PASSWORD_EXPIRES_IN,
       }
     );
 
@@ -546,10 +661,30 @@ const forgotPassword = async (req, res) => {
           <tr>
             <td style="background:#fafafa; text-align:center; padding:20px; font-size:12px; color:#888;">
               © 2026 OneHub. All rights reserved.<br/><br/>
-              <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" width="18"/></a>
-              <a href="#" style="margin:0 8px;"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" width="18"/></a>
-              <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" width="18"/></a>
-              <a href="#"><img style="margin:0 8px;" src="https://cdn-icons-png.flaticon.com/512/3536/3536505.png" width="18"/></a>
+              <a href="https://www.facebook.com/people/Onehub/100064185243040/" target="_blank" style="text-decoration:none;">
+                <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" width="18" alt="Facebook" />
+              </a>
+              <a href="https://www.instagram.com/onehubuae/" target="_blank" style="margin:0 5px; text-decoration:none;">
+                <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" width="18" alt="Instagram" />
+              </a>
+              <a href="https://www.linkedin.com/company/onehub-ae/" target="_blank" style="margin:0 5px; text-decoration:none;">
+                <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="18" alt="LinkedIn" />
+              </a>
+              <a href="https://www.tiktok.com/@onehub.ae" target="_blank" style="margin:0 5px; text-decoration:none;">
+                <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" width="18" alt="TikTok" />
+              </a>
+              <a href="https://www.snapchat.com/add/onehub.ae" target="_blank" style="margin:0 5px; text-decoration:none;">
+                <img src="https://cdn-icons-png.flaticon.com/512/3670/3670147.png" width="18" alt="Snapchat" />
+              </a>
+              <a href="https://in.pinterest.com/onehubinfluencers/" target="_blank" style="margin:0 5px; text-decoration:none;">
+                <img src="https://cdn-icons-png.flaticon.com/512/145/145808.png" width="18" alt="Pinterest" />
+              </a>
+              <a href="https://x.com/Onehub_ae" target="_blank" style="margin:0 5px; text-decoration:none;">
+                <img src="https://cdn-icons-png.flaticon.com/512/5969/5969020.png" width="18" alt="X" />
+              </a>
+              <a href="https://www.youtube.com/@OnehubUAE" target="_blank" style="margin:0 5px; text-decoration:none;">
+                <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" width="18" alt="YouTube" />
+              </a>
             </td>
           </tr>
         </table>

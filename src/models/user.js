@@ -68,6 +68,20 @@ const UserModel = database.define(
       allowNull: true,
       defaultValue: 0,
     },
+    terms_accepted: {
+      type: DataTypes.TINYINT,
+      allowNull: true,
+      defaultValue: 0,
+    },
+    promotional_updates_consent: {
+      type: DataTypes.TINYINT,
+      allowNull: true,
+      defaultValue: 0,
+    },
+    primary_platform_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
     is_active: {
       type: DataTypes.TINYINT,
       allowNull: true,
