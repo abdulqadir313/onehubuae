@@ -652,14 +652,7 @@ const getInfluencersList = async (req, res) => {
     } = req.body;
 
     const offset = (page - 1) * limit;
-
-    if (!platform_id || platform_id.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "platform_id (array) is required.",
-      });
-    }
-
+    const platform_ids = Array.isArray(platform_id) ? platform_id : [];
     const category_ids = Array.isArray(category_id) ? category_id : [];
 
     /* =========================
@@ -678,9 +671,12 @@ const getInfluencersList = async (req, res) => {
     /* =========================
        SOCIAL FILTER
     ========================== */
-    const socialWhere = {
-      platform_id: { [Op.in]: platform_id }, // ✅ multiple
-    };
+    const socialWhere = {};
+    if (platform_ids.length > 0) {
+      socialWhere.platform_id = {
+        [Op.in]: platform_ids,
+      };
+    }
     if (min_followers || max_followers) {
       socialWhere.followers = {};
       if (min_followers)
@@ -739,14 +735,20 @@ const getInfluencersList = async (req, res) => {
       },
     ];
 
-    if (category_ids.length > 0) {
-      includes.push({
-        model: CategoriesModel,
-        through: { attributes: [] },
-        where: { id: { [Op.in]: category_ids } },
-        required: true,
-      });
-    }
+    includes.push({
+      model: CategoriesModel,
+      through: {
+        attributes: [],
+      },
+      ...(category_ids.length > 0
+        ? {
+            where: {
+              id: { [Op.in]: category_ids },
+            },
+          }
+        : {}),
+      required: false,
+    });
 
     /* =========================
        MAIN QUERY
