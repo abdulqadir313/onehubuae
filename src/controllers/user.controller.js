@@ -50,6 +50,7 @@ const UserController = () => {
         terms_accepted, 
         promotional_updates_consent,
         primary_platform_id,
+        accepts_barter,
       } = req.body;
 
       if (!name || !email || !password || !user_type_id) {
@@ -102,6 +103,7 @@ const UserController = () => {
             terms_accepted: terms_accepted, 
             promotional_updates_consent: promotional_updates_consent,
             primary_platform_id: primary_platform_id,
+            accepts_barter: accepts_barter,
             is_active: 1,
             bio: bio || null,
             slug: uniqueSlug,
@@ -240,7 +242,7 @@ const UserController = () => {
   </table>
 </body>
 </html>`,
-    }).catch(err => console.log("Email error Abdul:", err));
+    }).catch(err => console.log("Email error:", err));
   }
         return res.status(201).json({
           success: true,
@@ -428,7 +430,7 @@ const UserController = () => {
   const updateMyProfile = async (req, res) => {
     try {
       const userId = req.user.id;
-      const { name, phone, country, city, bio } = req.body;
+      const { name, phone, country, city, nationality, bio } = req.body;
 
       const user = await UserModel.findByPk(userId);
       if (!user) {
@@ -444,7 +446,8 @@ const UserController = () => {
       if (country != null) updates.country = country;
       if (city != null) updates.city = city;
       if (bio != null) updates.bio = bio;
-
+      if (nationality != null) updates.nationality = nationality;
+      
       await user.update(updates);
       const { password: _, ...userData } = user.toJSON();
       return res.status(200).json({

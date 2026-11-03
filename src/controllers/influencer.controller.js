@@ -6,6 +6,7 @@ const {
   InfluencerAudienceLocationsModel,
   InfluencerAudienceAgeModel,
   InfluencerGalleryModel,
+  InfluencerMediaKitModel,
   UserTypeModel,
   UserStatusModel,
   SocialAccountModel,
@@ -350,6 +351,203 @@ const updateInfluencerGallery = async (req, res) => {
   }
 };
 
+
+const updateInfluencerMediaKit = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User not authenticated.",
+      });
+    }
+    const files = req.files || (req.file ? [req.file] : []);
+    if (!files.length) {
+      return res.status(400).json({
+        success: false,
+        message: "No images uploaded. Use field name 'media_kit'.",
+      });
+    }
+    const newImages = files.map(file => file.path);
+    const oldImages = await InfluencerMediaKitModel.findAll({
+      where: { influencer_id: userId }
+    });
+    for (const item of oldImages) {
+      if (item.file_path) {
+        await deleteImage(item.file_path); // delete from storage (Cloudinary/local)
+      }
+    }
+    await InfluencerMediaKitModel.destroy({
+      where: { influencer_id: userId }
+    });
+    const mediaData = newImages.map(path => ({
+      influencer_id: userId,
+      file_path: path,
+    }));
+    const insertedMediaData = await InfluencerMediaKitModel.bulkCreate(mediaData);
+    const mediaKitData = insertedMediaData.map(item => ({
+      id: item.id,
+      file_path: item.file_path
+    }));
+    return res.status(200).json({
+      success: true,
+      message: "Media Kit Data saved successfully.",
+      data: mediaKitData,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const updateInfluencerMediaKiterer = async (req, res) => {
+  const userId = req.user?.id;
+  const uploadedAssets = [];
+
+  try {
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated.",
+      });
+    }
+
+    const files = req.files || (req.file ? [req.file] : []);
+
+    if (!files.length) {
+      return res.status(400).json({
+        success: false,
+        message: "No files uploaded. Use field name 'media_kit'.",
+      });
+    }
+
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/gif",
+      "application/pdf",
+    ];
+
+    // Upload images and PDFs to Cloudinary.
+    for (const file of files) {
+      if (!allowedTypes.includes(file.mimetype)) {
+        throw new Error(`Unsupported file type: ${file.originalname}`);
+      }
+
+      const isPdf = file.mimetype === "application/pdf";
+
+      const result = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: "onehub/media-kits",
+            resource_type: isPdf ? "raw" : "image",
+            public_id: `${Date.now()}-${Math.round(
+              Math.random() * 1e9
+            )}${isPdf ? ".pdf" : ""}`,
+          },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        );
+
+        if (!file.buffer) {
+          return reject(
+            new Error(
+              "File buffer is missing. Configure Multer with memoryStorage()."
+            )
+          );
+        }
+
+        uploadStream.end(file.buffer);
+      });
+
+      uploadedAssets.push({
+        file_path: result.secure_url,
+        public_id: result.public_id,
+        resource_type: result.resource_type,
+      });
+    }
+
+    // Save the new records after all uploads succeed.
+    const oldImages = await InfluencerMediaKitModel.findAll({
+      where: { influencer_id: userId },
+    });
+
+    const transaction =
+      await InfluencerMediaKitModel.sequelize.transaction();
+
+    try {
+      await InfluencerMediaKitModel.destroy({
+        where: { influencer_id: userId },
+        transaction,
+      });
+
+      const mediaData = uploadedAssets.map((asset) => ({
+        influencer_id: userId,
+        file_path: asset.file_path,
+      }));
+
+      const insertedMediaData =
+        await InfluencerMediaKitModel.bulkCreate(mediaData, {
+          transaction,
+          returning: true,
+        });
+
+      await transaction.commit();
+
+      // Best-effort cleanup of old Cloudinary files.
+      // This assumes deleteImage() handles your stored Cloudinary URLs.
+      for (const item of oldImages) {
+        if (item.file_path) {
+          try {
+            await deleteImage(item.file_path);
+          } catch (deleteError) {
+            console.error(
+              "Failed to delete old media kit file:",
+              deleteError.message
+            );
+          }
+        }
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Media kit uploaded successfully.",
+        data: insertedMediaData.map((item, index) => ({
+          id: item.id,
+          file_path: item.file_path,
+          resource_type: uploadedAssets[index].resource_type,
+        })),
+      });
+    } catch (dbError) {
+      await transaction.rollback();
+      throw dbError;
+    }
+  } catch (error) {
+    console.error("Media kit upload error:", error);
+
+    // Remove newly uploaded files if saving the database records fails.
+    await Promise.allSettled(
+      uploadedAssets.map((asset) =>
+        cloudinary.uploader.destroy(asset.public_id, {
+          resource_type: asset.resource_type,
+        })
+      )
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to upload media kit.",
+      error: error.message,
+    });
+  }
+};
+
 const updateInfluencerProfile = async (req, res) => {
     try {
       const userId = req.user.id;
@@ -628,7 +826,7 @@ const getInfluencersList = async (req, res) => {
           ELSE 'high'
         END
       `),
-      "price_range", // ✅ changed alias
+      "price_range",
     ],
     [fn("COUNT", col("id")), "count"],
   ],
@@ -969,8 +1167,6 @@ const deleteUser = async (req, res) => {
       });
     }
 
-    // ❌ Delete related data first
-
     // Influencer Profile
     await InfluencerProfileModel.destroy({
       where: { user_id: userId },
@@ -984,7 +1180,7 @@ const deleteUser = async (req, res) => {
     // Categories (Many-to-Many)
     await user.setCategories([]);
 
-    // 👉 Audience tables (based on your DB: influencer_id)
+    //Audience tables (based on your DB: influencer_id)
     await InfluencerAudienceGenderModel.destroy({
       where: { influencer_id: userId },
     });
@@ -997,7 +1193,7 @@ const deleteUser = async (req, res) => {
       where: { influencer_id: userId },
     });
 
-    // 👤 Delete user
+    // Delete user
     await user.destroy();
 
     return res.status(200).json({
@@ -1064,6 +1260,7 @@ const getSocialAccountById = async(req,res)=>{
     updateInfluencerAudienceLocations,
     getPublicInfluencerProfile,
     updateInfluencerGallery,
+    updateInfluencerMediaKit,
   };
 };
 

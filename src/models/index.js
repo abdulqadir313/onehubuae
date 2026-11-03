@@ -31,6 +31,7 @@ const OrderStatusLogModel = require("./order_status_log");
 const PaymentStatusModel = require("./payment_status");
 const PaymentModel = require("./payment");
 const InfluencerGalleryModel = require("./influencer_gallery");
+const InfluencerMediaKitModel = require("./influencer_media_kit");
 
 // User module
 UserModel.belongsTo(UserTypeModel, { foreignKey: "user_type_id" });
@@ -186,4 +187,5 @@ module.exports = {
   InfluencerAudienceGenderModel,
   InfluencerGalleryModel,
   CampaignInfluencersModel,
+  InfluencerMediaKitModel,
 };

@@ -21,6 +21,7 @@ const {
   updateInfluencerAudienceLocations,
   getPublicInfluencerProfile,
   updateInfluencerGallery,
+  updateInfluencerMediaKit,
 } = InfluencerController();
 router.post("/get-influencers-list", getInfluencersList);
 router.get("/get-social-account-by-id", getSocialAccountById);
@@ -34,6 +35,11 @@ router.put(
   "/update-gallery",
   uploadImage.array("gallery_pic", 10),
   updateInfluencerGallery
+);
+router.put(
+  "/update-mediakit",
+  uploadImage.array("media_kit", 10),
+  updateInfluencerMediaKit
 );
 router.put("/update-platforms", updateInfluencersPlatform);
 router.put("/update-categories", updateInfluencerCategories);

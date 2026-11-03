@@ -39,6 +39,10 @@ const UserModel = database.define(
       type: DataTypes.STRING(100),
       allowNull: true,
     },
+    nationality: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
     profile_pic: {
       type: DataTypes.STRING(255),
       allowNull: true,
@@ -74,6 +78,11 @@ const UserModel = database.define(
       defaultValue: 0,
     },
     promotional_updates_consent: {
+      type: DataTypes.TINYINT,
+      allowNull: true,
+      defaultValue: 0,
+    },
+    accepts_barter: {
       type: DataTypes.TINYINT,
       allowNull: true,
       defaultValue: 0,
