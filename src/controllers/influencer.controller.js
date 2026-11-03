@@ -568,7 +568,7 @@ const updateInfluencerProfile = async (req, res) => {
         });
       }
 
-      const { name, phone, bio, country, city, dob, gender, price_start, category_ids } = req.body;
+      const { name, phone, bio, country, city, nationality, dob, gender, price_start, category_ids, accepts_barter } = req.body;
       const profile = await InfluencerProfileModel.findOne({
         where: { user_id: userId },
       });
@@ -590,6 +590,8 @@ const updateInfluencerProfile = async (req, res) => {
       if (dob != null) userUpdates.dob = dob;
       if (gender != null) userUpdates.gender = gender;
       if (bio != null) userUpdates.bio = bio;
+      if (nationality != null) userUpdates.nationality = nationality;
+      if (accepts_barter != null) userUpdates.accepts_barter = accepts_barter;
       await user.update(userUpdates);
 
       const userProfile = {};
