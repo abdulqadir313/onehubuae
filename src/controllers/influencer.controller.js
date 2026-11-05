@@ -1358,6 +1358,37 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const acceptTerms = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await UserModel.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+    if (user.terms_accepted === 1 || user.terms_accepted === true) {
+      return res.status(200).json({
+        success: true,
+        message: "Terms has already been accepted.",
+      });
+    }
+    await user.update({
+      terms_accepted: 1,
+    });
+    return res.status(200).json({
+      success: true,
+      message: "Term accepted successfully.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 
 const getSocialAccountById = async(req,res)=>{
   try{
@@ -1411,6 +1442,7 @@ const getSocialAccountById = async(req,res)=>{
     updateInfluencerGallery,
     updateInfluencerMediaKit,
     updateInfluencerProfileByAdmin,
+    acceptTerms,
   };
 };
 

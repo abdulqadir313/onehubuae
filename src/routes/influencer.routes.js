@@ -23,6 +23,7 @@ const {
   updateInfluencerGallery,
   updateInfluencerMediaKit,
   updateInfluencerProfileByAdmin,
+  acceptTerms,
 } = InfluencerController();
 router.post("/get-influencers-list", getInfluencersList);
 router.get("/get-social-account-by-id", getSocialAccountById);
@@ -31,6 +32,7 @@ router.post("/public-profile", getPublicInfluencerProfile);
 router.post("/update-public-profile", updateInfluencerProfileByAdmin);
 router.use(jwtController.protect);
 router.use(jwtController.allowRoles(USER_TYPES.INFLUENCER));
+router.post("/accept-terms", acceptTerms);
 router.get("/get-profile", getInfluencerProfile);
 router.put("/update-profile", updateInfluencerProfile);
 
