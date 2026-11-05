@@ -319,6 +319,41 @@ const UserController = () => {
     }
   };
 
+  const checkEmailExists = async (req, res) => {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({
+          success: false,
+          message: "Email is required.",
+        });
+      }
+
+      const existingUser = await UserModel.findOne({
+        where: {
+          email: email.trim().toLowerCase(),
+        },
+        attributes: ["id"],
+      });
+
+      return res.status(200).json({
+        success: true,
+        email_exists: !!existingUser,
+        available: !existingUser,
+        message: existingUser
+          ? "Email address is already registered."
+          : "Email address is available.",
+      });
+
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  };
+
   /**
    * @description Authenticate user and return token
    * @param req
@@ -856,6 +891,7 @@ const resetPassword = async (req, res) => {
     deleteAccount,
     forgotPassword,
     resetPassword,
+    checkEmailExists,
   };
 };
 
