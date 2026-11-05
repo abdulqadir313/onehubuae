@@ -626,6 +626,149 @@ const updateInfluencerProfile = async (req, res) => {
   };
 
 
+
+  const updateInfluencerProfileByAdmin = async (req, res) => {
+  try {
+    const {
+      influncer_id,
+      influencer_id,
+      name,
+      phone,
+      bio,
+      country,
+      city,
+      nationality,
+      dob,
+      gender,
+      price_start,
+      accepts_barter,
+    } = req.body;
+
+    // Support both spellings, but use influencer_id going forward
+    const userId = influencer_id || influncer_id;
+    console.log(name);
+    // Validate influencer ID
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "influencer_id is required.",
+      });
+    }
+
+    // Validate gender
+    if (
+      gender != null &&
+      !["male", "female", "other"].includes(gender.toLowerCase())
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Gender must be male, female, or other.",
+      });
+    }
+
+    // Find influencer user
+    const user = await UserModel.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Influencer not found.",
+      });
+    }
+
+    // Find influencer profile
+    const profile = await InfluencerProfileModel.findOne({
+      where: {
+        user_id: userId,
+      },
+    });
+
+    if (!profile) {
+      return res.status(404).json({
+        success: false,
+        message: "Influencer profile not found.",
+      });
+    }
+
+    let categories = [];
+    categories = await user.getCategories({
+          attributes: ["id", "name", "slug", "image"],
+        });
+
+    /* =========================
+       USER DETAILS UPDATE
+    ========================== */
+
+    const userUpdates = {};
+
+    if (name != null) userUpdates.name = name;
+    if (phone != null) userUpdates.phone = phone;
+    if (bio != null) userUpdates.bio = bio;
+    if (country != null) userUpdates.country = country;
+    if (city != null) userUpdates.city = city;
+    if (nationality != null) userUpdates.nationality = nationality;
+    if (dob != null) userUpdates.dob = dob;
+    if (gender != null) userUpdates.gender = gender.toLowerCase();
+    if (accepts_barter != null) {
+      userUpdates.accepts_barter = accepts_barter;
+    }
+
+    // Profile picture update (if uploaded)
+    if (req.file?.path) {
+      userUpdates.profile_pic = req.file.path;
+    }
+
+    if (Object.keys(userUpdates).length > 0) {
+      await user.update(userUpdates);
+    }
+
+    /* =========================
+       INFLUENCER PROFILE UPDATE
+    ========================== */
+
+    const profileUpdates = {};
+
+    if (price_start != null) {
+      profileUpdates.price_start = price_start;
+    }
+
+    if (name != null) {
+      profileUpdates.display_name = name;
+    }
+
+    if (Object.keys(profileUpdates).length > 0) {
+      await profile.update(profileUpdates);
+    }
+
+    /* =========================
+       CATEGORY UPDATE
+    ========================== */
+
+    /* =========================
+       RESPONSE
+    ========================== */
+
+    return res.status(200).json({
+      success: true,
+      message: "Influencer profile updated successfully.",
+      data: {
+        user,
+        profile,
+        categories,
+      },
+    });
+
+  } catch (error) {
+    console.error("Update Influencer Profile Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
   /**
    * @description Get influencers by platform (and optional category filter)
    * @param req
@@ -1265,6 +1408,7 @@ const getSocialAccountById = async(req,res)=>{
     getPublicInfluencerProfile,
     updateInfluencerGallery,
     updateInfluencerMediaKit,
+    updateInfluencerProfileByAdmin,
   };
 };
 

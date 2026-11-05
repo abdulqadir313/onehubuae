@@ -22,15 +22,18 @@ const {
   getPublicInfluencerProfile,
   updateInfluencerGallery,
   updateInfluencerMediaKit,
+  updateInfluencerProfileByAdmin,
 } = InfluencerController();
 router.post("/get-influencers-list", getInfluencersList);
 router.get("/get-social-account-by-id", getSocialAccountById);
 router.get("/get-all-social-accounts", getAllSocialAccounts);
 router.post("/public-profile", getPublicInfluencerProfile);
+router.post("/update-public-profile", updateInfluencerProfileByAdmin);
 router.use(jwtController.protect);
 router.use(jwtController.allowRoles(USER_TYPES.INFLUENCER));
 router.get("/get-profile", getInfluencerProfile);
 router.put("/update-profile", updateInfluencerProfile);
+
 router.put(
   "/update-gallery",
   uploadImage.array("gallery_pic", 10),
