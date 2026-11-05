@@ -634,6 +634,7 @@ const updateInfluencerProfile = async (req, res) => {
       influencer_id,
       name,
       phone,
+      email,
       bio,
       country,
       city,
@@ -704,6 +705,7 @@ const updateInfluencerProfile = async (req, res) => {
     if (name != null) userUpdates.name = name;
     if (phone != null) userUpdates.phone = phone;
     if (bio != null) userUpdates.bio = bio;
+    if (email != null) userUpdates.email = email;
     if (country != null) userUpdates.country = country;
     if (city != null) userUpdates.city = city;
     if (nationality != null) userUpdates.nationality = nationality;
