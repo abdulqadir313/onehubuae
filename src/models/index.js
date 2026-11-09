@@ -72,6 +72,7 @@ UserModel.hasMany(InfluencerAudienceGenderModel, { foreignKey: "influencer_id" }
 UserModel.hasMany(InfluencerAudienceAgeModel, { foreignKey: "influencer_id" });
 UserModel.hasMany(InfluencerAudienceLocationsModel, { foreignKey: "influencer_id" });
 UserModel.hasMany(InfluencerGalleryModel, { foreignKey: "influencer_id" });
+UserModel.hasMany(InfluencerMediaKitModel, { foreignKey: "influencer_id" });
 
 
 UserModel.belongsToMany(CategoriesModel, {
