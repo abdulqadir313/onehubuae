@@ -16,6 +16,7 @@ const {
 const { uploadImage } = require("../handlers/uploadImage");
 const { errorMonitor } = require("nodemailer/lib/xoauth2");
 const { deleteImage } = require("../handlers/uploadImage");
+const { scrapeInstagramProfile } = require("../services/instagramScraper");
 
 const InfluencerController = () => {
   /**
@@ -24,6 +25,65 @@ const InfluencerController = () => {
    * @param res
    * @returns Influencer profile with user, type, status, social accounts, categories
    */
+
+  const scrapeInstagram = async (req, res) => {
+    try {
+        let { username } = req.body;
+
+        if (!username) {
+            return res.status(400).json({
+                success: false,
+                message: "Instagram username is required"
+            });
+        }
+
+        username = username.trim();
+
+        // Accept username or public Instagram profile URL
+        username = username
+            .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
+            .replace(/^@/, "")
+            .split(/[/?#]/)[0];
+
+        if (!/^[a-zA-Z0-9._]{1,30}$/.test(username)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Instagram username"
+            });
+        }
+
+        const result = await scrapeInstagramProfile(username);
+
+        if (!result.success) {
+            return res.status(422).json({
+                success: false,
+                message: "Unable to retrieve Instagram profile",
+                error: result.error
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Instagram profile processed successfully",
+            data: {
+                username: result.username,
+                followers_count: result.followers,
+                profile_pic_url: result.profilePic,
+                scraped_at: new Date()
+            }
+        });
+
+    } catch (error) {
+        console.error("Instagram API error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+};
+
+
   const getInfluencerProfile = async (req, res) => {
     try {
       const userId = req.user.id;
@@ -35,8 +95,8 @@ const InfluencerController = () => {
           { model: InfluencerProfileModel, required: true },
           { model: InfluencerGalleryModel, required: false , attributes: ["id","image_path"]},
           { model: InfluencerMediaKitModel, required: false , attributes: ["id","file_path"]},
-          {model: SocialAccountModel,required: false,include: [{ model: PlatformModel, attributes: ["id", "name", "icon"] }],},
-          {model: CategoriesModel,through: { attributes: [] },attributes: ["id", "name", "slug", "image"],required: false,},
+          { model: SocialAccountModel,required: false,include: [{ model: PlatformModel, attributes: ["id", "name", "icon"] }],},
+          { model: CategoriesModel,through: { attributes: [] },attributes: ["id", "name", "slug", "image"],required: false,},
           { model: InfluencerAudienceGenderModel, required: false, attributes: ["id","male", "female", "other"]  },
           { model: InfluencerAudienceAgeModel, required: false, attributes: ["id","age_range", "percentage"] },
           { model: InfluencerAudienceLocationsModel, required: false, attributes: ["id","country", "percentage"] },
@@ -70,7 +130,7 @@ const InfluencerController = () => {
       where: { slug },
       attributes: { exclude: ["password"] },
       include: [
-        { model: UserTypeModel, attributes: ["id", "type_name"] },
+          { model: UserTypeModel, attributes: ["id", "type_name"] },
           { model: UserStatusModel, attributes: ["id", "status_name"] },
           { model: InfluencerProfileModel, required: true },
           {model: SocialAccountModel,required: false,include: [{ model: PlatformModel, attributes: ["id", "name", "icon"] }],},
@@ -464,7 +524,6 @@ const updateInfluencerMediaKiterer = async (req, res) => {
             )
           );
         }
-
         uploadStream.end(file.buffer);
       });
 
@@ -649,7 +708,7 @@ const updateInfluencerProfile = async (req, res) => {
 
     // Support both spellings, but use influencer_id going forward
     const userId = influencer_id || influncer_id;
-    console.log(name);
+    //console.log(name);
     // Validate influencer ID
     if (!userId) {
       return res.status(400).json({
@@ -1445,6 +1504,7 @@ const getSocialAccountById = async(req,res)=>{
     updateInfluencerMediaKit,
     updateInfluencerProfileByAdmin,
     acceptTerms,
+    scrapeInstagram,
   };
 };
 

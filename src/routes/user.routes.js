@@ -17,6 +17,7 @@ const {
   forgotPassword,
   resetPassword,
   checkEmailExists,
+  getAllUsers,
 } = UserController();
 
 router.post("/register", registerUser);
@@ -26,6 +27,7 @@ router.post("/logout", logoutUser);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 router.post("/check-email", checkEmailExists);
+router.post("/get-all-users", getAllUsers);
 router.use(jwtController.protect);  
 router.get("/get-profile", getMyProfile);
 router.put("/update-profile", updateMyProfile);

@@ -12,6 +12,7 @@ const wishlistRoutes = require("../routes/wishlist.routes");
 const notificationRoutes = require("../routes/notification.routes");
 const planRoutes = require("../routes/plan.routes");
 const platformRoutes = require("../routes/platform.routes");
+const instagramRoutes = require("../routes/instagram.routes");
 
 
 exports.set_routes = (app) => {
@@ -25,4 +26,5 @@ exports.set_routes = (app) => {
   app.use("/api/notifications", notificationRoutes);
   app.use("/api/plans", planRoutes);
    app.use("/api/platform", platformRoutes);
+   app.use("/api/instagram", instagramRoutes);
 };

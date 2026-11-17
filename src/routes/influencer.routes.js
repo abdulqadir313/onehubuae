@@ -24,7 +24,9 @@ const {
   updateInfluencerMediaKit,
   updateInfluencerProfileByAdmin,
   acceptTerms,
+  scrapeInstagram,
 } = InfluencerController();
+router.post("/scrape", scrapeInstagram);
 router.post("/get-influencers-list", getInfluencersList);
 router.get("/get-social-account-by-id", getSocialAccountById);
 router.get("/get-all-social-accounts", getAllSocialAccounts);
