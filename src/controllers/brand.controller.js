@@ -259,16 +259,18 @@ const getBrandsListing = async (req, res) => {
     } = req.body;
 
     const offset = (page - 1) * limit;
-console.log(search);
     const whereCondition = {
       user_type_id: 2 // brand user type id (change if different)
     };
 
     if (search) {
-      whereCondition.name = {
-        [Op.like]: `%${search}%`
-      };
-    }
+          whereCondition[Op.or] = [
+            { name: { [Op.like]: `%${search}%` } },
+            { bio: { [Op.like]: `%${search}%` } },
+            { email: { [Op.like]: `%${search}%` } },
+            { phone: { [Op.like]: `%${search}%` } },
+          ];
+        }
 
     const { count, rows } = await UserModel.findAndCountAll({
       where: whereCondition,

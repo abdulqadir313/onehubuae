@@ -1,6 +1,7 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
 const {
   UserModel,
   BrandProfileModel,
@@ -513,6 +514,120 @@ const UserController = () => {
     }
   };
 
+
+const getAllUsers = async (req, res) => {
+  try {
+    const {
+      user_type_id,
+      status_id,
+      keyword,
+      page = 1,
+      limit = 20,
+      sort_by = "createdAt",
+      sort_order = "DESC",
+    } = req.body;
+    const pageNumber = Math.max(parseInt(page) || 1, 1);
+    const pageLimit = Math.min(Math.max(parseInt(limit) || 12, 1), 100);
+    const offset = (pageNumber - 1) * pageLimit;
+
+    /* =========================
+       USER FILTERS
+    ========================== */
+
+    const where = {};
+
+    // User Type Filter
+    if (user_type_id) {
+      where.user_type_id = user_type_id;
+    }
+
+    // User Status Filter
+    if (status_id) {
+      where.status_id = status_id;
+    }
+
+    // Keyword Search
+    if (keyword && keyword.trim()) {
+      where[Op.or] = [
+        { name: { [Op.like]: `%${keyword.trim()}%` } },
+        { email: { [Op.like]: `%${keyword.trim()}%` } },
+        { phone: { [Op.like]: `%${keyword.trim()}%` } },
+      ];
+    }
+    
+
+    /* =========================
+       SORTING
+    ========================== */
+
+    const allowedSortFields = [
+      "id",
+      "name",
+      "email",
+      "createdAt",
+      "updatedAt",
+    ];
+
+    const sortField = allowedSortFields.includes(sort_by)
+      ? sort_by
+      : "createdAt";
+
+    const sortDirection =
+      sort_order.toUpperCase() === "ASC" ? "ASC" : "DESC";
+
+    /* =========================
+       MAIN QUERY
+    ========================== */
+
+    const { count, rows } = await UserModel.findAndCountAll({
+      where,
+      attributes: {
+        exclude: ["password"],
+      },
+      include: [
+        {
+          model: UserTypeModel,
+          attributes: ["id", "type_name"],
+        },
+        {
+          model: UserStatusModel,
+          attributes: ["id", "status_name"],
+        },
+        {
+          model: BrandProfileModel,
+          required: false,
+        },
+        {
+          model: InfluencerProfileModel,
+          required: false,
+        },
+      ],
+      distinct: true,
+      limit: pageLimit,
+      offset,
+      order: [[sortField, sortDirection]],
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Users fetched successfully.",
+      total: count,
+      current_page: pageNumber,
+      per_page: pageLimit,
+      total_pages: Math.ceil(count / pageLimit),
+      data: rows,
+    });
+
+  } catch (error) {
+    console.error("Get All Users Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
   /**
    * @description Update authenticated user's profile (name, phone, country, city, bio)
    * @param req
@@ -825,10 +940,6 @@ const sendEmail = async ({ to, subject, html }) => {
   });
 };
 
-
-
-
-
 const resetPassword = async (req, res) => {
   try {
     const { token, password } = req.body;
@@ -892,6 +1003,7 @@ const resetPassword = async (req, res) => {
     forgotPassword,
     resetPassword,
     checkEmailExists,
+    getAllUsers,
   };
 };
 
