@@ -22,6 +22,7 @@ const {
   getPublicInfluencerProfile,
   updateInfluencerGallery,
   updateInfluencerMediaKit,
+  updateInfluencerMediaKitWithId,
   updateInfluencerProfileByAdmin,
   acceptTerms,
   scrapeInstagram,
@@ -32,6 +33,11 @@ router.get("/get-social-account-by-id", getSocialAccountById);
 router.get("/get-all-social-accounts", getAllSocialAccounts);
 router.post("/public-profile", getPublicInfluencerProfile);
 router.post("/update-public-profile", updateInfluencerProfileByAdmin);
+router.put(
+  "/update-mediakit-with-id",
+  uploadImage.array("media_kit", 10),
+  updateInfluencerMediaKitWithId
+);
 router.use(jwtController.protect);
 router.use(jwtController.allowRoles(USER_TYPES.INFLUENCER));
 router.post("/accept-terms", acceptTerms);

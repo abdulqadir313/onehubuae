@@ -713,6 +713,43 @@ const getAllUsers = async (req, res) => {
     }
   };
 
+  const updateProfilePictureWithUserId = async (req, res) => {
+    try {
+      const userId = req.body.user_id;
+      const user = await UserModel.findByPk(userId);
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found.",
+        });
+      }
+      const file = req.file;
+      if (!file || !file.path) {
+        return res.status(400).json({
+          success: false,
+          message: "No image file uploaded. Send the file in form field 'profile_pic'.",
+        });
+      }
+
+      if (user.profile_pic) {
+        await deleteImage(user.profile_pic);
+      }
+
+      await user.update({ profile_pic: file.path });
+      const { password: _, ...userData } = user.toJSON();
+      return res.status(200).json({
+        success: true,
+        message: "Profile picture updated.",
+        data: { ...userData, profile_pic: file.path },
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  };
+
   /**
    * @description Change authenticated user's password
    * @param req
@@ -1004,6 +1041,7 @@ const resetPassword = async (req, res) => {
     resetPassword,
     checkEmailExists,
     getAllUsers,
+    updateProfilePictureWithUserId,
   };
 };
 

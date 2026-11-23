@@ -465,6 +465,58 @@ const updateInfluencerMediaKit = async (req, res) => {
   }
 };
 
+
+const updateInfluencerMediaKitWithId = async (req, res) => {
+  try {
+    const userId = req.body.user_id;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User not authenticated.",
+      });
+    }
+    const files = req.files || (req.file ? [req.file] : []);
+    if (!files.length) {
+      return res.status(400).json({
+        success: false,
+        message: "No images uploaded. Use field name 'media_kit'.",
+      });
+    }
+    const newImages = files.map(file => file.path);
+    const oldImages = await InfluencerMediaKitModel.findAll({
+      where: { influencer_id: userId }
+    });
+    for (const item of oldImages) {
+      if (item.file_path) {
+        await deleteImage(item.file_path); // delete from storage (Cloudinary/local)
+      }
+    }
+    await InfluencerMediaKitModel.destroy({
+      where: { influencer_id: userId }
+    });
+    const mediaData = newImages.map(path => ({
+      influencer_id: userId,
+      file_path: path,
+    }));
+    const insertedMediaData = await InfluencerMediaKitModel.bulkCreate(mediaData);
+    const mediaKitData = insertedMediaData.map(item => ({
+      id: item.id,
+      file_path: item.file_path
+    }));
+    return res.status(200).json({
+      success: true,
+      message: "Media Kit Data saved successfully.",
+      data: mediaKitData,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 const updateInfluencerMediaKiterer = async (req, res) => {
   const userId = req.user?.id;
   const uploadedAssets = [];
@@ -1502,6 +1554,7 @@ const getSocialAccountById = async(req,res)=>{
     getPublicInfluencerProfile,
     updateInfluencerGallery,
     updateInfluencerMediaKit,
+    updateInfluencerMediaKitWithId,
     updateInfluencerProfileByAdmin,
     acceptTerms,
     scrapeInstagram,

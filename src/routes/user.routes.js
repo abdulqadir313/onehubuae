@@ -12,6 +12,7 @@ const {
   getMyProfile,
   updateMyProfile,
   updateProfilePicture,
+  updateProfilePictureWithUserId,
   changePassword,
   deleteAccount,
   forgotPassword,
@@ -28,6 +29,7 @@ router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 router.post("/check-email", checkEmailExists);
 router.get("/get-all-users", getAllUsers);
+router.put("/update-profile-picture-userid", uploadImage.single('profile_pic') , updateProfilePictureWithUserId);
 router.use(jwtController.protect);  
 router.get("/get-profile", getMyProfile);
 router.put("/update-profile", updateMyProfile);
