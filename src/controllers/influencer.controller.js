@@ -1193,6 +1193,62 @@ const getInfluencersList = async (req, res) => {
     }
   };
 
+
+  const updateInfluencersPlatformWithId = async (req, res) => {
+    try {
+      const userId = req.body.user_id;
+      const { platforms } = req.body;
+      if (!Array.isArray(platforms)) {
+        return res.status(400).json({
+          success: false,
+          message: "platforms must be an array.",
+        });
+      }
+
+      const user = await UserModel.findByPk(userId);
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found.",
+        });
+      }
+
+      await SocialAccountModel.destroy({ where: { user_id: userId } });
+
+      const toCreate = platforms
+        .filter((p) => p && p.platform_id != null)
+        .map((p) => ({
+          user_id: userId,
+          platform_id: p.platform_id,
+          username: p.username || null,
+          profile_url: p.profile_url || null,
+          followers: p.followers ?? null,
+          total_reach:p.total_reach ?? null,
+          engagement_rate: p.engagement_rate ?? null,
+        }));
+
+      if (toCreate.length > 0) {
+        await SocialAccountModel.bulkCreate(toCreate);
+      }
+
+      const accounts = await SocialAccountModel.findAll({
+        where: { user_id: userId },
+        include: [{ model: PlatformModel, attributes: ["id", "name", "icon"] }],
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: "Platforms updated.",
+        data: accounts,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  };
+
   /**
    * @description Update influencer's categories (replaces all; user can have multiple)
    * @param req
@@ -1564,6 +1620,7 @@ const getSocialAccountById = async(req,res)=>{
     updateInfluencerGallery,
     updateInfluencerMediaKit,
     updateInfluencerMediaKitWithId,
+    updateInfluencersPlatformWithId,
     updateInfluencerProfileByAdmin,
     acceptTerms,
     scrapeInstagram,
