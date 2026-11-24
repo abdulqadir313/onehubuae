@@ -756,6 +756,7 @@ const updateInfluencerProfile = async (req, res) => {
       gender,
       price_start,
       accepts_barter,
+      category_ids,
     } = req.body;
 
     // Support both spellings, but use influencer_id going forward
@@ -858,6 +859,14 @@ const updateInfluencerProfile = async (req, res) => {
     /* =========================
        CATEGORY UPDATE
     ========================== */
+
+    if (Array.isArray(category_ids)) {
+      await user.setCategories(category_ids);
+
+      categories = await user.getCategories({
+        attributes: ["id", "name", "slug", "image"],
+      });
+    }
 
     /* =========================
        RESPONSE
